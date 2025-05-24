@@ -1,4 +1,4 @@
-------------------------------------Map địa chỉ file----------------------------------------------(Bấm vào edit file để xem rõ hơn)^
+------------------------------------Map địa chỉ file-------------------------------------(Bấm vào edit file để xem rõ hơn)^
 
 PROJECT_ROOT/
 ├── frontend/                   # Chứa toàn bộ code giao diện người dùng (Client-side)
