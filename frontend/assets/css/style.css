@@ -1,0 +1,380 @@
+/* Đặt lại mặc định và font */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #fafbfd;
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar/Header */
+header { background: #fff; border-bottom: 2px solid #ed1c24; }
+.navbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 32px;
+}
+.logo {
+    display: flex; align-items: center; gap: 8px; font-size: 1.1em;
+    font-weight: 600; color: #ed1c24;
+}
+.logo img { height: 36px; }
+.nav-links {
+    list-style: none; display: flex; gap: 22px;
+}
+.nav-links a {
+    text-decoration: none; color: #ed1c24; font-weight: 500;
+    padding: 8px 16px; border-radius: 8px; transition: background .15s;
+}
+.nav-links a.active,
+.nav-links a:hover {
+    background: #ffe6e8; color: #d32f2f;
+}
+
+/* Hero/banner */
+.hero {
+    background: linear-gradient(90deg, #FFD600 0%, #E53935 100%);
+    color: #fff; padding: 48px 0 24px 0; text-align: center;
+}
+.hero h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; }
+.hero p { font-size: 1.1em; }
+.hero .search-box { margin-top: 16px; display: flex; justify-content: center; }
+.search-box input {
+    padding: 10px; width: 320px; border-radius: 5px 0 0 5px; border: none;
+    outline: none; font-size: 1em;
+}
+.search-box button {
+    padding: 10px 20px; border: none; border-radius: 0 5px 5px 0;
+    background: #2196F3; color: #fff; font-weight: bold; font-size: 1em;
+    cursor: pointer;
+}
+.search-box button:hover { background: #1565c0; }
+
+/* Service */
+.services {
+    background: #1976d2; color: #fff; padding: 32px 0; text-align: center;
+}
+.services h2 { font-size: 1.7em; font-weight: 600; }
+.service-list {
+    display: flex; justify-content: center; gap: 32px; margin-top: 16px; flex-wrap: wrap;
+}
+.service-list > div {
+    background: #1565c0; padding: 24px 18px; border-radius: 18px; min-width: 220px;
+    box-shadow: 0 3px 10px #0001; min-height: 160px; font-size: 1em;
+}
+.service-list h3 { font-size: 1.1em; margin-bottom: 10px; font-weight: 600; color: #FFD600; }
+
+/* Info Panels */
+.info-panels {
+    display: flex; gap: 32px; justify-content: center; padding: 32px 0; flex-wrap: wrap;
+}
+.info-left, .info-right {
+    background: #f5f6fa; padding: 24px 30px; border-radius: 18px; width: 340px;
+    box-shadow: 0 2px 8px #0001;
+}
+.info-left h3, .info-right h3 { color: #d32f2f; margin-bottom: 12px; }
+.info-left ul, .info-right ul { list-style: none; }
+.info-left li, .info-right li { margin-bottom: 11px; font-size: 1em; }
+.info-left a, .info-right a {
+    color: #1976d2; text-decoration: none; font-weight: 500;
+    transition: color 0.15s;
+}
+.info-left a:hover, .info-right a:hover { color: #ed1c24; }
+
+/* CTA Section */
+.cta {
+    background: linear-gradient(90deg, #1976d2 0%, #ff3d00 100%);
+    color: #fff; text-align: center; padding: 40px 0; margin-top: 28px; border-radius: 18px;
+}
+.cta .btn {
+    margin: 18px 8px 0 0; padding: 12px 32px; border-radius: 8px; border: none;
+    background: #fff; color: #d32f2f; font-weight: bold; text-decoration: none;
+    font-size: 1em; cursor: pointer; display: inline-block;
+    transition: background 0.2s, color 0.2s;
+}
+.cta .btn.secondary {
+    background: #d32f2f; color: #fff;
+}
+.cta .btn:hover { background: #fce4ec; }
+
+/* Form, Section Layout */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 30px 0 0 0;
+}
+.register-form {
+    background: #fff; padding: 32px 24px 24px 24px; border-radius: 18px;
+    max-width: 440px; margin: 38px auto 18px auto;
+    box-shadow: 0 2px 8px #0001;
+    display: flex; flex-direction: column; align-items: center;
+}
+.register-form h2 {
+    color: #d32f2f; margin-bottom: 18px; font-weight: 600;
+}
+.register-form form {
+    display: flex; flex-direction: column; gap: 13px; width: 100%; margin-bottom: 18px;
+}
+.register-form input,
+.register-form select {
+    padding: 10px; border: 1.5px solid #cfd8dc; border-radius: 8px; font-size: 1em;
+    background: #fafafa;
+    transition: border .2s;
+}
+.register-form input:focus,
+.register-form select:focus { border: 1.5px solid #2196F3; outline: none; }
+.register-form button {
+    background: #1976d2; color: #fff; font-weight: 600; border: none;
+    border-radius: 8px; padding: 12px; margin-top: 10px;
+    cursor: pointer; font-size: 1.1em; transition: background .2s;
+}
+.register-form button:hover { background: #ed1c24; }
+.register-form a { color: #1565c0; font-weight: 500; }
+.register-form hr { width: 100%; margin: 26px 0 20px 0; border: 0; border-top: 1px solid #eee; }
+
+/* Table style (lịch sử, quản lý) */
+table {
+    width: 100%; border-collapse: collapse; background: #f5f6fa;
+    border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px #0001; margin-top: 12px;
+}
+th, td {
+    padding: 12px 10px; text-align: left; font-size: 1em;
+    border-bottom: 1px solid #e0e0e0;
+}
+th {
+    background: #f0f0f0;
+    color: #d32f2f;
+    font-weight: bold;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #ffe6e8; transition: background 0.18s; }
+
+/* Danh sách địa điểm */
+.location-list { margin-top: 18px; }
+.location-item {
+    background: #f0f4c3; color: #333; padding: 12px 18px; border-radius: 10px;
+    margin-bottom: 12px; box-shadow: 0 1px 5px #0001;
+}
+
+/* Footer */
+footer {
+    text-align: center; padding: 16px; background: #e0e0e0;
+    color: #333; border-top: 1px solid #d6d6d6;
+    margin-top: auto;
+    font-size: 1em;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .service-list, .info-panels { flex-direction: column; align-items: center; }
+    .service-list > div, .info-left, .info-right { width: 96%; min-width: unset; }
+}
+@media (max-width: 650px) {
+    .navbar { flex-direction: column; gap: 10px; padding: 8px 8px;}
+    .hero { padding: 20px 0 14px 0; }
+    .service-list > div, .info-left, .info-right, main, .register-form { width: 98%; max-width: unset;}
+    .cta { padding: 22px 0; }
+    th, td { font-size: 0.98em; }
+}
+
+.dkhm-banner {
+    background: linear-gradient(rgba(221,37,48,0.82), rgba(221,37,48,0.82)), url('assets/img/dangkyhienmau.png') center/cover no-repeat;
+    color: #fff;
+    padding: 72px 0 52px 0;
+    text-align: center;
+    position: relative;
+}
+.dkhm-banner-content h1 {
+    font-size: 2.5em;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+.dkhm-banner-content p {
+    font-size: 1.25em;
+    font-weight: 400;
+    opacity: .95;
+}
+
+/* Form đăng ký hiến máu */
+.dkhm-form-box {
+    max-width: 750px;
+    margin: -10px auto 38px auto;
+    background: #fff;
+    box-shadow: 0 6px 28px #0002;
+    border-radius: 18px;
+    padding: 34px 34px 28px 34px;
+}
+.dkhm-form h2 {
+    font-size: 1.22em;
+    font-weight: 700;
+    margin-bottom: 22px;
+    letter-spacing: -.5px;
+}
+.dkhm-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 19px;
+}
+.dkhm-form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #2c2c2c;
+}
+.dkhm-form-group input,
+.dkhm-form-group select {
+    padding: 10px 12px;
+    border: 1.3px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #fafafa;
+    transition: border .2s;
+}
+.dkhm-form-group input:focus,
+.dkhm-form-group select:focus {
+    border-color: #ed1c24;
+    outline: none;
+}
+.dkhm-form-row {
+    display: flex;
+    gap: 22px;
+}
+.dkhm-form-row .dkhm-form-group { flex: 1; margin-bottom: 0;}
+.dkhm-form .btn-submit {
+    width: 100%;
+    padding: 13px 0;
+    background: #ed1c24;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 9px;
+    transition: background .22s;
+    cursor: pointer;
+}
+.dkhm-form .btn-submit:hover {
+    background: #b81d24;
+}
+
+/* Block điều kiện/quy trình/lợi ích */
+.dkhm-block {
+    margin: 38px auto 0 auto;
+    max-width: 1100px;
+    text-align: center;
+}
+.dkhm-block h2 {
+    font-size: 1.21em;
+    font-weight: 700;
+    margin-bottom: 26px;
+    color: #222;
+    letter-spacing: -.4px;
+}
+.dkhm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 0;
+}
+.dkhm-check-item {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 7px #0001;
+    padding: 19px 14px;
+    font-weight: 500;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 1em;
+    min-height: 56px;
+}
+.dkhm-check-item span {
+    color: #ed1c24;
+    font-size: 1.13em;
+    margin-top: 3px;
+}
+.dkhm-check-item small { color: #666; font-weight: 400; display: block; margin-top: 2px; }
+
+.dkhm-proc-grid {
+    display: flex;
+    gap: 35px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.dkhm-proc-item {
+    flex: 1 1 160px;
+    max-width: 180px;
+    min-width: 110px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 7px #0001;
+    padding: 18px 0 12px 0;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1em;
+}
+.dkhm-proc-icon {
+    font-size: 2.1em;
+    margin-bottom: 5px;
+}
+
+/* Footer */
+.dkhm-footer {
+    background: #0a0a0a;
+    color: #fff;
+    padding: 38px 0 0 0;
+    margin-top: 54px;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+    padding: 0 16px 30px 16px;
+    font-size: 1em;
+}
+.footer-content div { min-width: 220px; }
+.footer-content b { font-size: 1.07em; }
+.footer-content span { display: block; margin: 4px 0; color: #fff9; }
+.footer-bottom {
+    text-align: center;
+    background: #141414;
+    color: #fff9;
+    padding: 12px 0;
+    font-size: .96em;
+    margin-top: 20px;
+}
+
+/* Nút đăng nhập ở header */
+.btn-login {
+    background: #ed1c24;
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 8px;
+    margin-left: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .18s;
+    border: none;
+}
+.btn-login:hover { background: #b81d24; color: #fff !important; }
+
+/* Responsive */
+@media (max-width: 950px) {
+    .dkhm-form-box { max-width: 96%; padding: 22px 3vw; }
+    .dkhm-block { max-width: 99%; }
+}
+@media (max-width: 600px) {
+    .dkhm-banner { padding: 40px 0 30px 0; }
+    .dkhm-banner-content h1 { font-size: 1.6em; }
+    .dkhm-form-row { flex-direction: column; gap: 0; }
+    .dkhm-form-box { padding: 13px 2vw; }
+    .footer-content { flex-direction: column; gap: 16px; }
+}

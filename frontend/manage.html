@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý hiến máu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="nav">
+    <a href="index.html">Trang chủ</a>
+    <a href="register.html">Đăng ký hiến máu</a>
+    <a href="search.html">Tra cứu nhóm máu</a>
+    <a href="find.html">Tìm người cần máu</a>
+    <a href="manage.html" style="background:#ffd6d6;">Quản lý hiến máu</a>
+    <a href="dashboard.html">Dashboard & Báo cáo</a>
+  </div>
+  <div class="container">
+    <div class="section" id="manage">
+      <h2>Quản lý hiến máu & kết nối</h2>
+      <form onsubmit="return handleManageDonation(event)">
+        <label>Mã người hiến máu:</label>
+        <input type="text" id="manage-donor-code" required>
+        <label>Trạng thái:</label>
+        <select id="manage-status">
+          <option>Đang đăng ký</option>
+          <option>Đang liên hệ</option>
+          <option>Đã hoàn thành</option>
+          <option>Hủy</option>
+        </select>
+        <button type="submit">Cập nhật</button>
+      </form>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

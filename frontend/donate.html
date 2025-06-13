@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký hiến máu nhân đạo</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="assets/img/logo.png" alt="Logo" height="40">
+                <span><b>HỖ TRỢ HIẾN MÁU</b></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang Chủ</a></li>
+                <li><a href="donate.html" class="active">Đăng ký hiến máu</a></li>
+                <li><a href="find-location.html">Tìm điểm hiến máu</a></li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+            <ul class="nav-links">
+                <li><a href="register.html">Đăng nhập/Đăng ký</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Banner -->
+    <section class="dkhm-banner">
+        <div class="dkhm-banner-content">
+            <h1>Đăng Ký Hiến Máu Nhân Đạo</h1>
+            <p>Một giọt máu cho đi, một cuộc đời ở lại</p>
+        </div>
+    </section>
+    <!-- Đăng ký form -->
+    <main>
+        <section class="dkhm-form-box">
+            <form class="dkhm-form">
+                <h2>Thông Tin Người Hiến Máu</h2>
+                <div class="dkhm-form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" required>
+                </div>
+                <div class="dkhm-form-row">
+                    <div class="dkhm-form-group">
+                        <label>Ngày tháng năm sinh</label>
+                        <input type="date" required>
+                    </div>
+                    <div class="dkhm-form-group">
+                        <label>Giới tính</label>
+                        <select required>
+                            <option>Nam</option>
+                            <option>Nữ</option>
+                            <option>Khác</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dkhm-form-row">
+                    <div class="dkhm-form-group">
+                        <label>Số CMND/CCCD</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="dkhm-form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" required>
+                    </div>
+                </div>
+                <div class="dkhm-form-group">
+                    <label>Email</label>
+                    <input type="email" required>
+                </div>
+                <div class="dkhm-form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" required>
+                </div>
+                <div class="dkhm-form-row">
+                    <div class="dkhm-form-group">
+                        <label>Nhóm máu (nếu biết)</label>
+                        <select>
+                            <option>A</option>
+                            <option>B</option>
+                            <option>AB</option>
+                            <option>O</option>
+                        </select>
+                    </div>
+                    <div class="dkhm-form-group">
+                        <label>Ngày muốn hiến máu</label>
+                        <input type="date">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Đăng ký hiến máu</button>
+            </form>
+        </section>
+
+        <!-- Điều kiện cần đáp ứng -->
+        <section class="dkhm-block">
+            <h2>Điều Kiện Cần Đáp Ứng</h2>
+            <div class="dkhm-grid">
+                <div class="dkhm-check-item"><span>✔</span> Độ tuổi<br><small>18-60 tuổi</small></div>
+                <div class="dkhm-check-item"><span>✔</span> Cân nặng<br><small>Nam ≥ 50kg, Nữ ≥ 45kg</small></div>
+                <div class="dkhm-check-item"><span>✔</span> Sức khỏe<br><small>Tình trạng sức khỏe tốt</small></div>
+                <div class="dkhm-check-item"><span>✔</span> Bệnh lý<br><small>Không mắc các bệnh truyền nhiễm</small></div>
+                <div class="dkhm-check-item"><span>✔</span> Thời gian<br><small>Giữa 2 lần hiến máu ≥ 12 tuần</small></div>
+                <div class="dkhm-check-item"><span>✔</span> Tiền sử<br><small>Không có tiền sử bệnh lý nghiêm trọng</small></div>
+            </div>
+        </section>
+
+        <!-- Quy trình hiến máu -->
+        <section class="dkhm-block">
+            <h2>Quy Trình Hiến Máu</h2>
+            <div class="dkhm-proc-grid">
+                <div class="dkhm-proc-item">
+                    <div class="dkhm-proc-icon">📝</div>
+                    <div>Đăng ký & khai báo y tế</div>
+                </div>
+                <div class="dkhm-proc-item">
+                    <div class="dkhm-proc-icon">👩‍⚕️</div>
+                    <div>Khám sàng lọc</div>
+                </div>
+                <div class="dkhm-proc-item">
+                    <div class="dkhm-proc-icon">🧪</div>
+                    <div>Xét nghiệm máu</div>
+                </div>
+                <div class="dkhm-proc-item">
+                    <div class="dkhm-proc-icon">❤️</div>
+                    <div>Hiến máu</div>
+                </div>
+                <div class="dkhm-proc-item">
+                    <div class="dkhm-proc-icon">🛏️</div>
+                    <div>Nghỉ ngơi và phục hồi</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lợi ích -->
+        <section class="dkhm-block">
+            <h2>Lợi ích Khi Tham Gia Hiến Máu</h2>
+            <div class="dkhm-grid">
+                <div class="dkhm-check-item"><span>✔</span> Được khám sức khỏe miễn phí</div>
+                <div class="dkhm-check-item"><span>✔</span> Được xét nghiệm máu miễn phí</div>
+                <div class="dkhm-check-item"><span>✔</span> Được cấp giấy chứng nhận hiến máu</div>
+                <div class="dkhm-check-item"><span>✔</span> Được tư vấn sức khỏe</div>
+                <div class="dkhm-check-item"><span>✔</span> Được hỗ trợ chi phí đi lại</div>
+                <div class="dkhm-check-item"><span>✔</span> Góp phần cứu giúp người bệnh</div>
+            </div>
+        </section>
+    </main>
+    <footer class="dkhm-footer">
+        <div class="footer-content">
+            <div>
+                <b>Thông Tin Liên Hệ</b><br>
+                <span>📞 Đường dây nóng: 1900 1234</span><br>
+                <span>📍 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</span>
+            </div>
+            <div>
+                <b>Giờ Làm Việc</b><br>
+                Thứ 2 - Thứ 6: 7:30 - 17:00<br>
+                Thứ 7 - Chủ nhật: 7:30 - 12:00
+            </div>
+            <div>
+                <b>Kết Nối</b><br>
+                <span>🌐</span> <span>💬</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2024 Trung tâm Hiến máu Nhân đạo. Tất cả quyền được bảo lưu.
+        </div>
+    </footer>
+</body>
+</html>

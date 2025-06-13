@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard & Báo cáo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="nav">
+    <a href="index.html">Trang chủ</a>
+    <a href="register.html">Đăng ký hiến máu</a>
+    <a href="search.html">Tra cứu nhóm máu</a>
+    <a href="find.html">Tìm người cần máu</a>
+    <a href="manage.html">Quản lý hiến máu</a>
+    <a href="dashboard.html" style="background:#ffd6d6;">Dashboard & Báo cáo</a>
+  </div>
+  <div class="container">
+    <div class="section" id="dashboard">
+      <h2>Dashboard & Báo cáo</h2>
+      <div class="dashboard">
+        <div class="card">
+          <h3>Tổng số người đăng ký</h3>
+          <p id="dashboard-total-donor">1234</p>
+        </div>
+        <div class="card">
+          <h3>Số lượt hiến máu đã thực hiện</h3>
+          <p id="dashboard-donated">876</p>
+        </div>
+        <div class="card">
+          <h3>Hiến máu đang chờ xử lý</h3>
+          <p id="dashboard-pending">52</p>
+        </div>
+        <div class="card">
+          <h3>Báo cáo xuất file</h3>
+          <button onclick="handleExportReport()">Tải về</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
