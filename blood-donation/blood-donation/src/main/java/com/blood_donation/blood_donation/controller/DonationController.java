@@ -20,26 +20,32 @@ import java.util.List;
 @RequestMapping("/donations")
 public class DonationController {
 
-    @Autowired private DonationService donationService;
-    @Autowired private BloodTypeRepository bloodTypeRepository;
+    @Autowired
+    private DonationService donationService;
 
+    @Autowired
+    private BloodTypeRepository bloodTypeRepository;
+
+    // Hiển thị form đăng ký hiến máu
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         List<BloodType> bloodTypes = bloodTypeRepository.findAll();
-        
+
         model.addAttribute("registrationDto", new DonationRegistrationDto());
         model.addAttribute("bloodTypes", bloodTypes);
-        
+
         return "member/donation-register-form";
     }
 
+    // Xử lý đăng ký hiến máu
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("registrationDto") DonationRegistrationDto dto,
                                       Principal principal,
                                       RedirectAttributes redirectAttributes) {
         try {
             donationService.createDonationRegistration(dto, principal.getName());
-            redirectAttributes.addFlashAttribute("successMessage", "Đăng ký hiến máu thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Đăng ký hiến máu thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
             return "redirect:/dashboard";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

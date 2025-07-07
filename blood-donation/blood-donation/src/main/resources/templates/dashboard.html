@@ -16,8 +16,16 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" th:href="@{/blood-info}">Tài liệu nhóm máu</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/blogs}">Blog kinh nghiệm</a></li>
-                <li class="nav-item" sec:authorize="isAnonymous()"><a class="btn btn-outline-danger me-2" th:href="@{/login}">Đăng nhập</a><a class="btn btn-danger" th:href="@{/register}">Đăng ký</a></li>
-                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="btn btn-primary me-2" th:href="@{/dashboard}">Bảng điều khiển</a><form th:action="@{/perform_logout}" method="post" class="d-inline"><button class="btn btn-outline-secondary" type="submit">Đăng xuất</button></form></li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="btn btn-outline-danger me-2" th:href="@{/login}">Đăng nhập</a>
+                    <a class="btn btn-danger" th:href="@{/register}">Đăng ký</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="btn btn-primary me-2" th:href="@{/dashboard}">Bảng điều khiển</a>
+                    <form th:action="@{/perform_logout}" method="post" class="d-inline">
+                        <button class="btn btn-outline-secondary" type="submit">Đăng xuất</button>
+                    </form>
+                </li>
             </ul>
         </div>
     </div>
@@ -33,14 +41,26 @@
             </p>
         </div>
     </div>
+
     <div class="col-12 mb-4" sec:authorize="hasAuthority('ADMIN')">
         <div class="card text-white bg-danger">
-             <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
-             <div class="card-body">
+            <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
+            <div class="card-body">
                 <h5 class="card-title">Chào mừng Admin!</h5>
                 <p class="card-text">Bạn có quyền truy cập các chức năng quản lý hệ thống.</p>
                 <a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
-             </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-4" sec:authorize="hasAnyAuthority('ADMIN', 'STAFF')">
+        <div class="card text-white bg-primary">
+            <div class="card-header fs-5 fw-bold">Khu vực Vận hành</div>
+            <div class="card-body">
+                <h5 class="card-title">Bảng điều khiển Nhân viên</h5>
+                <p class="card-text">Xem tổng quan, quản lý yêu cầu và kho máu.</p>
+                <a th:href="@{/staff/dashboard}" class="btn btn-light fw-bold">Đi đến &rarr;</a>
+            </div>
         </div>
     </div>
 
@@ -55,8 +75,8 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Đăng ký hiến máu</h5>
                     <p class="card-text">Đặt lịch và đăng ký sẵn sàng hiến máu khi cần.</p>
                     <a th:href="@{/donations/register}" class="btn btn-danger mt-auto">Đăng ký ngay</a>
@@ -64,19 +84,16 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Lịch sử hiến máu</h5>
                     <p class="card-text">Xem lại những lần hiến máu đầy ý nghĩa của bạn.</p>
-                    <a href="#" class="btn btn-secondary">Xem lịch sử</a>
+                    <a th:href="@{/donations/history}" class="btn btn-secondary mt-auto">Xem lịch sử</a>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
-
 
 <footer class="bg-light text-center text-lg-start mt-auto py-3">
     <div class="text-center">© 2025 Bản quyền: Hệ thống Hỗ trợ Hiến máu</div>

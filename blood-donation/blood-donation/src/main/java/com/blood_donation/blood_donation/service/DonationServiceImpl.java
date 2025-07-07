@@ -27,6 +27,7 @@ public class DonationServiceImpl implements DonationService {
                 .existsByUserAndStatus(user, DonationRegistration.Status.PENDING);
 
         if (hasPendingRegistration) {
+            // Nếu có, ném ra lỗi để Controller bắt được và thông báo cho người dùng
             throw new RuntimeException("Bạn đã có một đăng ký hiến máu đang chờ xử lý. Vui lòng chờ hoặc liên hệ trung tâm để biết thêm chi tiết.");
         }
 
@@ -41,7 +42,7 @@ public class DonationServiceImpl implements DonationService {
         registration.setGender(dto.getGender());
         registration.setProvince(dto.getProvince());
         registration.setAvailableDate(dto.getAvailableDate());
-        registration.setStatus(DonationRegistration.Status.PENDING);
+        registration.setStatus(DonationRegistration.Status.PENDING); // Trạng thái ban đầu
 
         donationRegistrationRepository.save(registration);
     }

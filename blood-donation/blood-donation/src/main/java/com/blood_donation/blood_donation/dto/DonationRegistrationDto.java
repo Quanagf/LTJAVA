@@ -1,6 +1,7 @@
 package com.blood_donation.blood_donation.dto;
 
 import com.blood_donation.blood_donation.entity.DonationRegistration;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +15,8 @@ public class DonationRegistrationDto {
     private DonationRegistration.Gender gender;
     private String province;
 
-    // Giúp Spring Boot hiểu định dạng ngày tháng từ form HTML
+    // Giúp Spring Boot hiểu đúng định dạng ngày tháng từ form HTML (ví dụ: yyyy-MM-dd)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate availableDate;
+
 }

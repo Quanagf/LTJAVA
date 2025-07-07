@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,8 +46,13 @@ public class DonationRegistration {
     private LocalDateTime completedAt;
     private LocalDate nextEligibleDate;
 
-    public enum Gender { MALE, FEMALE, OTHER }
-    public enum Status { PENDING, CONTACTED, COMPLETED, CANCELLED }
+    public enum Gender {
+        MALE, FEMALE, OTHER
+    }
+
+    public enum Status {
+        PENDING, CONTACTED, COMPLETED, CANCELLED, APPROVED, REJECTED
+    }
 
     @PrePersist
     protected void onCreate() {
