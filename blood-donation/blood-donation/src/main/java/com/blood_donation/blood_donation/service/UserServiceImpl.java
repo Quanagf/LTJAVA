@@ -6,6 +6,9 @@ import com.blood_donation.blood_donation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,6 +43,32 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         // Gán vai trò mặc định
         user.setRole(User.Role.MEMBER);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> findAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public User createUserByAdmin(AdminUserCreationDto creationDto) {
+        if (userRepository.existsByUsername(creationDto.getUsername())) {
+            throw new RuntimeException("Tên đăng nhập đã tồn tại!");
+        }
+        if (userRepository.existsByEmail(creationDto.getEmail())) {
+            throw new RuntimeException("Email đã được sử dụng!");
+        }
+
+        User user = new User();
+        user.setFullName(creationDto.getFullName());
+        user.setUsername(creationDto.getUsername());
+        user.setEmail(creationDto.getEmail());
+        user.setPassword(passwordEncoder.encode(creationDto.getPassword()));
+
+        // Gán vai trò được chọn bởi Admin
+        user.setRole(creationDto.getRole());
 
         return userRepository.save(user);
     }
