@@ -1,17 +1,22 @@
 package com.blood_donation.blood_donation.service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
+import com.blood_donation.blood_donation.dto.UserProfileDto;
 import com.blood_donation.blood_donation.dto.UserRegistrationDto;
 import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
-import com.blood_donation.blood_donation.dto.UserProfileDto; // Thêm import
-import java.util.Optional;
-import jakarta.transaction.Transactional; // Thêm import
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,6 +29,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerNewUser(UserRegistrationDto registrationDto) {
+        if (registrationDto.getDateOfBirth() == null) {
+            throw new RuntimeException("Vui lòng nhập ngày sinh của bạn.");
+        }
+        int age = Period.between(registrationDto.getDateOfBirth(), LocalDate.now()).getYears();
+        if (age < 18) {
+            throw new RuntimeException("Bạn chưa đủ 18 tuổi để đăng ký tài khoản và hiến máu.");
+        }
         // Kiểm tra mật khẩu có khớp không
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
             throw new RuntimeException("Mật khẩu xác nhận không khớp!");

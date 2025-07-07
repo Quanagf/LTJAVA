@@ -33,43 +33,53 @@
                     <table class="table table-hover">
                         <thead><tr><th>Bệnh nhân</th><th>Nhóm máu</th><th>Số lượng</th><th>Hành động</th></tr></thead>
                         <tbody>
-                        <tr th:each="req : ${emergencyRequestPage.content}">
-                            <td th:text="${req.patientName}"></td>
-                            <td><span class="badge bg-danger" th:text="${req.bloodType}"></span></td>
-                            <td th:text="${req.quantityNeeded} + ' đơn vị'"></td>
-                            <td><a href="#" class="btn btn-sm btn-primary">Xử lý</a></td>
-                        </tr>
-                        <tr th:if="${emergencyRequestPage.empty}"><td colspan="4" class="text-center text-muted">Không có yêu cầu nào.</td></tr>
+                            <tr th:each="req : ${emergencyRequestPage.content}">
+                                <td th:text="${req.patientName}"></td>
+                                <td><span class="badge bg-danger" th:text="${req.bloodType}"></span></td>
+                                <td th:text="${req.quantityNeeded} + ' đơn vị'"></td>
+                                <td><a href="#" class="btn btn-sm btn-primary">Xử lý</a></td>
+                            </tr>
+                            <tr th:if="${emergencyRequestPage.empty}"><td colspan="4" class="text-center text-muted">Không có yêu cầu nào.</td></tr>
                         </tbody>
                     </table>
-                </div>
+                    </div>
             </div>
         </div>
 
         <div class="col-lg-6">
             <div class="card shadow">
-                <div class="card-header bg-success text-white"><h5 class="mb-0">Người hiến máu (Sẵn sàng)</h5></div>
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Người hiến máu (Chờ duyệt)</h5>
+                </div>
                 <div class="card-body">
                     <table class="table table-hover align-middle">
-                        <thead><tr><th>Người hiến</th><th>Nhóm máu</th><th>Ngày sẵn sàng</th><th>Hành động</th></tr></thead>
+                        <thead><tr><th>Người hiến</th><th>Nhóm máu</th><th>Ngày hẹn hiến</th><th>Hành động</th></tr></thead>
                         <tbody>
-                        <tr th:each="donorReg : ${donationRegistrationPage.content}">
-                            <td th:text="${donorReg.user.fullName}"></td>
-                            <td><span class="badge bg-success" th:text="${donorReg.bloodType}"></span></td>
-                            <td th:text="${#temporals.format(donorReg.availableDate, 'dd-MM-yyyy')}"></td>
-                            <td>
-                                <form th:action="@{/staff/donations/{id}/approve(id=${donorReg.id})}" method="post" class="d-inline-block me-1">
-                                    <button type="submit" class="btn btn-sm btn-success">Chấp thuận</button>
-                                </form>
-                                <form th:action="@{/staff/donations/{id}/reject(id=${donorReg.id})}" method="post" class="d-inline-block">
-                                    <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <tr th:if="${donationRegistrationPage.empty}"><td colspan="4" class="text-center text-muted">Không có người hiến nào đang sẵn sàng.</td></tr>
+                            <tr th:each="donorReg : ${donationRegistrationPage.content}">
+                                <td th:text="${donorReg.user.fullName}"></td>
+                                <td><span class="badge bg-success" th:text="${donorReg.bloodType}"></span></td>
+                                <td th:text="${#temporals.format(donorReg.availableDate, 'dd-MM-yyyy')}"></td>
+                                <td>
+                                    <th:block th:with="isFutureDate=${donorReg.availableDate.isAfter(#temporals.createToday())}">
+                                        <form th:action="@{/staff/donations/{id}/approve(id=${donorReg.id})}" method="post" class="d-inline-block me-1">
+                                            <button type="submit" class="btn btn-sm btn-success" th:disabled="${isFutureDate}"
+                                                    th:title="${isFutureDate ? 'Chỉ có thể duyệt đơn của ngày hôm nay' : ''}">
+                                                Chấp thuận
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/staff/donations/{id}/reject(id=${donorReg.id})}" method="post" class="d-inline-block">
+                                            <button type="submit" class="btn btn-sm btn-danger" th:disabled="${isFutureDate}"
+                                                    th:title="${isFutureDate ? 'Chỉ có thể duyệt đơn của ngày hôm nay' : ''}">
+                                                Từ chối
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                    </td>
+                            </tr>
+                            <tr th:if="${donationRegistrationPage.empty}"><td colspan="4" class="text-center text-muted">Không có người hiến nào đang chờ duyệt.</td></tr>
                         </tbody>
                     </table>
-                </div>
+                    </div>
             </div>
         </div>
     </div>

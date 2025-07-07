@@ -44,23 +44,23 @@
 
     <div class="col-12 mb-4" sec:authorize="hasAuthority('ADMIN')">
         <div class="card text-white bg-danger">
-            <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
-            <div class="card-body">
+             <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
+             <div class="card-body">
                 <h5 class="card-title">Chào mừng Admin!</h5>
                 <p class="card-text">Bạn có quyền truy cập các chức năng quản lý hệ thống.</p>
                 <a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
-            </div>
+             </div>
         </div>
     </div>
 
     <div class="col-12 mb-4" sec:authorize="hasAnyAuthority('ADMIN', 'STAFF')">
         <div class="card text-white bg-primary">
-            <div class="card-header fs-5 fw-bold">Khu vực Vận hành</div>
-            <div class="card-body">
+             <div class="card-header fs-5 fw-bold">Khu vực Vận hành</div>
+             <div class="card-body">
                 <h5 class="card-title">Bảng điều khiển Nhân viên</h5>
                 <p class="card-text">Xem tổng quan, quản lý yêu cầu và kho máu.</p>
                 <a th:href="@{/staff/dashboard}" class="btn btn-light fw-bold">Đi đến &rarr;</a>
-            </div>
+             </div>
         </div>
     </div>
 

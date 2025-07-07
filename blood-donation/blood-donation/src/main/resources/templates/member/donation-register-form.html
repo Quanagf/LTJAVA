@@ -48,7 +48,8 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="availableDate" class="form-label">Ngày có thể hiến máu <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="availableDate" th:field="*{availableDate}" required>
+                        <input type="date" class="form-control" id="availableDate" th:field="*{availableDate}"
+                            th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
                     </div>
                 </div>
 
