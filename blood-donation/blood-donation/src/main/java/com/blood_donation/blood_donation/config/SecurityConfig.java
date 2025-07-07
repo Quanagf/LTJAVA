@@ -38,11 +38,11 @@ public class SecurityConfig {
                 
                 // --- CÁC ĐƯỜNG DẪN YÊU CẦU VAI TRÒ ---
                 // Yêu cầu đăng nhập để truy cập các trang này
-                .requestMatchers("/dashboard", "/profile/**").authenticated() 
-                
+                .requestMatchers("/dashboard").authenticated()
+                .requestMatchers("/profile/**").authenticated()
+                .requestMatchers("/donations/**").authenticated()
                 // Chức năng của Member
                 .requestMatchers("/donations/register", "/requests/emergency").hasAuthority("MEMBER")
-                
                 // Chức năng của Staff (bao gồm cả Admin)
                 .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
                 

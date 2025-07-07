@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
+import com.blood_donation.blood_donation.dto.UserProfileDto; // Thêm import
+import java.util.Optional;
+import jakarta.transaction.Transactional; // Thêm import
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -71,5 +74,30 @@ public class UserServiceImpl implements UserService {
         user.setRole(creationDto.getRole());
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    @Transactional // Đảm bảo tất cả các thay đổi được lưu hoặc không lưu gì cả
+    public void updateUserProfile(String username, UserProfileDto profileDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng!"));
+
+        // Kiểm tra xem email mới có bị trùng với người dùng khác không
+        Optional<User> userWithNewEmail = userRepository.findByEmail(profileDto.getEmail());
+        if (userWithNewEmail.isPresent() && !userWithNewEmail.get().getId().equals(user.getId())) {
+            throw new RuntimeException("Email đã được sử dụng bởi một tài khoản khác.");
+        }
+
+        // Cập nhật thông tin
+        user.setFullName(profileDto.getFullName());
+        user.setEmail(profileDto.getEmail());
+        user.setNationalId(profileDto.getNationalId());
+
+        userRepository.save(user);
     }
 }

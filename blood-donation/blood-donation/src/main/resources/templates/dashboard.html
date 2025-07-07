@@ -46,11 +46,11 @@
 
     <div class="row">
         <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Hồ sơ cá nhân</h5>
                     <p class="card-text">Xem và cập nhật thông tin cá nhân của bạn.</p>
-                    <a href="#" class="btn btn-primary">Quản lý hồ sơ</a>
+                    <a th:href="@{/profile}" class="btn btn-primary mt-auto">Quản lý hồ sơ</a>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Đăng ký hiến máu</h5>
                     <p class="card-text">Đặt lịch và đăng ký sẵn sàng hiến máu khi cần.</p>
-                    <a href="#" class="btn btn-danger">Đăng ký ngay</a>
+                    <a th:href="@{/donations/register}" class="btn btn-danger mt-auto">Đăng ký ngay</a>
                 </div>
             </div>
         </div>

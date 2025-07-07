@@ -12,4 +12,6 @@ public interface DonationRegistrationRepository extends JpaRepository<DonationRe
 
     // Tìm tất cả các lượt đăng ký hiến máu của một người dùng cụ thể, sắp xếp theo ngày tạo mới nhất
     List<DonationRegistration> findByUserOrderByCreatedAtDesc(User user);
+    boolean existsByUserAndStatus(User user, DonationRegistration.Status status);
+
 }

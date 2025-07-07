@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // Dùng để kiểm tra khi đăng ký xem email đã tồn tại chưa
     boolean existsByEmail(String email);
+    // Dùng để kiểm tra đăng nhập và cho Spring Security
+    Optional<User> findByEmail(String username);
 }
