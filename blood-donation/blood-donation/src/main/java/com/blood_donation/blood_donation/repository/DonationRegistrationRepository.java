@@ -7,12 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.User;
 
 @Repository
-public interface DonationRegistrationRepository extends JpaRepository<DonationRegistration, Integer> {
+public interface DonationRegistrationRepository extends JpaRepository<DonationRegistration, Integer>, JpaSpecificationExecutor<DonationRegistration> {
 
     List<DonationRegistration> findByUserOrderByCreatedAtDesc(User user);
 
@@ -28,4 +28,5 @@ public interface DonationRegistrationRepository extends JpaRepository<DonationRe
 
     long countByStatus(DonationRegistration.Status status);
 
+    List<DonationRegistration> findByStatusOrderByCreatedAtDesc(DonationRegistration.Status status);
 }

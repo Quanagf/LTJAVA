@@ -10,5 +10,6 @@ public interface EmergencyRequestService {
     void approveRequest(Integer requestId);
     void rejectRequest(Integer requestId);
     void createEmergencyRequest(EmergencyRequestDto dto, String username);
+    Page<EmergencyRequest> findAllRequests(Pageable pageable, Integer bloodTypeId, String phone, EmergencyRequest.Status status);
 
 }

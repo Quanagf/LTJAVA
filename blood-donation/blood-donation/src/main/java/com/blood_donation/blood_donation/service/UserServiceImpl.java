@@ -263,4 +263,9 @@ public class UserServiceImpl implements UserService {
         // Nếu không có role, trả về tất cả user
         return userRepository.findAll(pageable);
     }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }

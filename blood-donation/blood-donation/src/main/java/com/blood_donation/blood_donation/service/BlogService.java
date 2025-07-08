@@ -22,4 +22,5 @@ public interface BlogService {
     Optional<Blog> findById(Integer id);
     void updateBlogByAdmin(Integer blogId, BlogCreationDto blogDto);
     void deleteBlog(Integer blogId);
+    Page<Blog> findAllBlogs(Pageable pageable, Integer authorId);
 }

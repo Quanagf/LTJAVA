@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.blood_donation.blood_donation.dto.BlogCreationDto;
@@ -104,5 +105,11 @@ public class BlogServiceImpl implements BlogService {
             throw new RuntimeException("Không tìm thấy bài viết với ID: " + blogId);
         }
         blogRepository.deleteById(blogId);
+    }
+
+    @Override
+    public Page<Blog> findAllBlogs(Pageable pageable, Integer authorId) {
+        Specification<Blog> spec = BlogSpecification.filterBy(authorId);
+        return blogRepository.findAll(spec, pageable);
     }
 }

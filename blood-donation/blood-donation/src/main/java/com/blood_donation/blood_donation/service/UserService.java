@@ -9,6 +9,7 @@ import com.blood_donation.blood_donation.dto.AdminUserEditDto;
 import com.blood_donation.blood_donation.dto.UserProfileDto;
 import java.util.Optional; // Thêm import
 import com.blood_donation.blood_donation.dto.PasswordChangeDto; // Thêm import
+import java.util.List;
 
 
 public interface UserService {
@@ -30,5 +31,7 @@ public interface UserService {
     void deleteUser(Integer userIdToDelete, String adminUsername);
 
     Page<User> findAllUsers(Pageable pageable, String role);
+    
+    List<User> findAll();    
 
 }

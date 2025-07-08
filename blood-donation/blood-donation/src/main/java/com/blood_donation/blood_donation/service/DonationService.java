@@ -1,11 +1,14 @@
 package com.blood_donation.blood_donation.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import com.blood_donation.blood_donation.dto.DonationEditDto;
 import com.blood_donation.blood_donation.dto.DonationRegistrationDto;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DonationService {
     /**
@@ -18,4 +21,5 @@ public interface DonationService {
     List<DonationRegistration> findDonationHistoryByUsername(String username);
     Optional<DonationRegistration> findRegistrationByIdAndUsername(Integer id, String username);
     void updateDonationRegistration(DonationEditDto dto, String username);
+    Page<DonationRegistration> findAllRegistrations(Pageable pageable, Integer bloodTypeId, String phone, LocalDate availableDate, DonationRegistration.Status status);
 }

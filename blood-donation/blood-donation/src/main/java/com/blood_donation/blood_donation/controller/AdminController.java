@@ -15,14 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
 import com.blood_donation.blood_donation.dto.AdminUserEditDto;
 import com.blood_donation.blood_donation.dto.BlogCreationDto;
 import com.blood_donation.blood_donation.entity.Blog;
+import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.User;
+import com.blood_donation.blood_donation.repository.BloodTypeRepository;
 import com.blood_donation.blood_donation.service.BlogService;
-import com.blood_donation.blood_donation.service.UserService;
+import com.blood_donation.blood_donation.service.UserService; // Thêm import
+import com.blood_donation.blood_donation.service.DonationService;
+import com.blood_donation.blood_donation.service.EmergencyRequestService;
+import com.blood_donation.blood_donation.entity.EmergencyRequest;
+
+
 
 @Controller
 @RequestMapping("/admin")
@@ -33,6 +42,17 @@ public class AdminController {
 
     @Autowired
     private BlogService blogService;
+
+    @Autowired
+    private DonationService donationService;
+
+    @Autowired
+    private BloodTypeRepository bloodTypeRepository;   
+
+    @Autowired
+    private EmergencyRequestService emergencyRequestService; 
+
+
 
     // --- QUẢN LÝ NGƯỜI DÙNG ---
     @GetMapping("/users")
@@ -163,10 +183,19 @@ public class AdminController {
     
     // --- QUẢN LÝ BLOG TOÀN DIỆN ---
     @GetMapping("/blogs")
-    public String showBlogManagementPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+    public String showBlogManagement(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer authorId,
+            Model model) {
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<Blog> blogPage = blogService.findAllBlogs(pageable);
+        Page<Blog> blogPage = blogService.findAllBlogs(pageable, authorId);
+
         model.addAttribute("blogPage", blogPage);
+        model.addAttribute("authors", userService.findAll()); // Lấy tất cả user để làm bộ lọc
+        model.addAttribute("currentAuthorId", authorId);
+
         return "admin/blog-list";
     }
 
@@ -202,4 +231,55 @@ public class AdminController {
         }
         return "redirect:/admin/blogs";
     }
+
+    @GetMapping("/donation-registrations")
+    public String showAllDonationRegistrations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            // Thêm các tham số lọc
+            @RequestParam(required = false) Integer bloodTypeId,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate availableDate,
+            @RequestParam(required = false) DonationRegistration.Status status,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DonationRegistration> registrationPage = donationService.findAllRegistrations(pageable, bloodTypeId, phone, availableDate, status);
+
+        model.addAttribute("registrationPage", registrationPage);
+        // Đưa các giá trị lọc hiện tại vào model để giữ lại trên form
+        model.addAttribute("bloodTypes", bloodTypeRepository.findAll());
+        model.addAttribute("allStatuses", DonationRegistration.Status.values());
+        model.addAttribute("currentBloodTypeId", bloodTypeId);
+        model.addAttribute("currentPhone", phone);
+        model.addAttribute("currentAvailableDate", availableDate);
+        model.addAttribute("currentStatus", status);
+
+        return "admin/donation-registration-list";
+    }
+    
+    @GetMapping("/emergency-requests")
+    public String showEmergencyRequestList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            // Thêm các tham số lọc
+            @RequestParam(required = false) Integer bloodTypeId,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) EmergencyRequest.Status status,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EmergencyRequest> requestPage = emergencyRequestService.findAllRequests(pageable, bloodTypeId, phone, status);
+
+        model.addAttribute("requestPage", requestPage);
+        // Đưa các giá trị lọc hiện tại vào model để giữ lại trên form
+        model.addAttribute("bloodTypes", bloodTypeRepository.findAll());
+        model.addAttribute("allStatuses", EmergencyRequest.Status.values());
+        model.addAttribute("currentBloodTypeId", bloodTypeId);
+        model.addAttribute("currentPhone", phone);
+        model.addAttribute("currentStatus", status);
+
+        return "admin/emergency-request-list";
+    }
+
 }

@@ -16,6 +16,9 @@ import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.repository.BloodTypeRepository;
 import com.blood_donation.blood_donation.repository.DonationRegistrationRepository;
 import com.blood_donation.blood_donation.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class DonationServiceImpl implements DonationService {
@@ -127,5 +130,13 @@ public class DonationServiceImpl implements DonationService {
         registration.setStatus(DonationRegistration.Status.PENDING); // Reset lại trạng thái để nhân viên duyệt lại
 
         donationRegistrationRepository.save(registration);
+    }
+
+    @Override
+    public Page<DonationRegistration> findAllRegistrations(Pageable pageable, Integer bloodTypeId, String phone, LocalDate availableDate, DonationRegistration.Status status) {
+        // Tạo một Specification dựa trên các tham số lọc
+        Specification<DonationRegistration> spec = DonationRegistrationSpecification.filterBy(bloodTypeId, phone, availableDate, status);
+        // Gọi phương thức findAll của JpaSpecificationExecutor
+        return donationRegistrationRepository.findAll(spec, pageable);
     }
 }

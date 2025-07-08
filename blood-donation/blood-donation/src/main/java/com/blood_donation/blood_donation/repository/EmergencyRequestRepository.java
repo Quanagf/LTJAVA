@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor; // Thêm import
 
 import java.util.List;
 
 @Repository
-public interface EmergencyRequestRepository extends JpaRepository<EmergencyRequest, Integer> {
+public interface EmergencyRequestRepository extends JpaRepository<EmergencyRequest, Integer>,JpaSpecificationExecutor<EmergencyRequest> {
 
     // Lấy yêu cầu theo người tạo
     List<EmergencyRequest> findByRequesterUserOrderByCreatedAtDesc(User requesterUser);

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -107,5 +108,13 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
         newRequest.setStatus(EmergencyRequest.Status.PENDING);
 
         emergencyRequestRepository.save(newRequest);
+    }
+
+    @Override
+    public Page<EmergencyRequest> findAllRequests(Pageable pageable, Integer bloodTypeId, String phone, EmergencyRequest.Status status) {
+        // Tạo Specification từ các tham số lọc
+        Specification<EmergencyRequest> spec = EmergencyRequestSpecification.filterBy(bloodTypeId, phone, status);
+        // Gọi phương thức findAll có Specification
+        return emergencyRequestRepository.findAll(spec, pageable);
     }
 }
