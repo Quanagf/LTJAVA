@@ -26,4 +26,5 @@ public interface EmergencyRequestRepository extends JpaRepository<EmergencyReque
 
     // Phân trang danh sách yêu cầu theo trạng thái
     Page<EmergencyRequest> findByStatusOrderByCreatedAtDesc(EmergencyRequest.Status status, Pageable pageable);
+    Page<EmergencyRequest> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

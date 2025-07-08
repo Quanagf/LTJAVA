@@ -1,6 +1,8 @@
 package com.blood_donation.blood_donation.controller;
 
+import com.blood_donation.blood_donation.entity.EmergencyRequest;
 import com.blood_donation.blood_donation.entity.User;
+import com.blood_donation.blood_donation.repository.BloodTypeRepository;
 import com.blood_donation.blood_donation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,9 +14,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.blood_donation.blood_donation.dto.AdminUserCreationDto; // Import DTO mới
+import com.blood_donation.blood_donation.dto.BloodUnitDto;
+
 import org.springframework.web.bind.annotation.ModelAttribute; // Thêm import
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping; // Thêm import
 import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Thêm import
+
+import com.blood_donation.blood_donation.service.BloodInventoryService;
+import com.blood_donation.blood_donation.service.EmergencyRequestService; // Thêm import
+
 
 @Controller
 @RequestMapping("/admin") // Tất cả các request trong controller này sẽ bắt đầu bằng /admin
@@ -22,6 +31,31 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private EmergencyRequestService emergencyRequestService;
+    @Autowired
+    private BloodInventoryService inventoryService;
+    @Autowired
+    private BloodTypeRepository bloodTypeRepository;
+    @GetMapping("/inventory")
+    public String showInventoryManagement(Model model) {
+        model.addAttribute("inventorySummary", inventoryService.getInventorySummary());
+        model.addAttribute("bloodTypes", bloodTypeRepository.findAll());
+        model.addAttribute("newBloodUnit", new BloodUnitDto());
+        return "admin/inventory-management";
+    }
+
+    @PostMapping("/inventory/add")
+    public String addBloodUnit(@ModelAttribute("newBloodUnit") BloodUnitDto bloodUnitDto,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            inventoryService.addNewBloodUnit(bloodUnitDto);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã thêm đơn vị máu vào kho thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/inventory";
+    }
 
     // Ánh xạ tới /admin/users
     @GetMapping("/users")
@@ -57,5 +91,36 @@ public class AdminController {
             return "redirect:/admin/users/add";
         }
         return "redirect:/admin/users";
+    }
+     @GetMapping("/emergency-requests")
+    public String showEmergencyRequestList(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size,
+                                           Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EmergencyRequest> requestPage = emergencyRequestService.findAllRequests(pageable);
+        model.addAttribute("requestPage", requestPage);
+        return "admin/emergency-request-list";
+    }
+
+    @PostMapping("/emergency-requests/{id}/approve")
+    public String approveEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            emergencyRequestService.approveRequest(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã phê duyệt yêu cầu thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/emergency-requests";
+    }
+
+    @PostMapping("/emergency-requests/{id}/reject")
+    public String rejectEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            emergencyRequestService.rejectRequest(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/emergency-requests";
     }
 }

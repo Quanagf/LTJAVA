@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/donations/**").authenticated()
 
                         // Các chức năng dành cho Member
-                        .requestMatchers("/donations/register", "/requests/emergency").hasAuthority("MEMBER")
+                        .requestMatchers("/donations/register", "/requests/emergency").hasAuthority("ADMIN")
 
                         // Chức năng của Staff và Admin
                         .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
@@ -42,7 +42,9 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
                         // Các request còn lại đều yêu cầu đăng nhập
+                        .requestMatchers("/requests/emergency/**").hasAnyAuthority("MEMBER", "STAFF", "ADMIN")
                         .anyRequest().authenticated()
+
                 )
                 // Cấu hình form đăng nhập
                 .formLogin(form -> form
@@ -66,9 +68,11 @@ public class SecurityConfig {
 
     /*
     // Nếu bạn dùng encode mật khẩu khi đăng ký:
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     */
+
 }

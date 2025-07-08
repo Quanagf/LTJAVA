@@ -98,6 +98,21 @@
 <footer class="bg-light text-center text-lg-start mt-auto py-3">
     <div class="text-center">© 2025 Bản quyền: Hệ thống Hỗ trợ Hiến máu</div>
 </footer>
-
+<a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
+<a th:href="@{/admin/emergency-requests}" class="btn btn-light fw-bold ms-2">Quản lý Yêu cầu máu &rarr;</a>
+<div class="row">
+    <div class="col-md-4 mt-4">
+        <div class="card text-center h-100">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Yêu cầu máu khẩn cấp</h5>
+                <p class="card-text">Tạo một yêu cầu cần máu cho bản thân hoặc người thân.</p>
+                <a th:href="@{/requests/emergency/new}" class="btn btn-warning mt-auto">Tạo yêu cầu</a>
+            </div>
+        </div>
+    </div>
+</div>
+<a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
+<a th:href="@{/admin/emergency-requests}" class="btn btn-light fw-bold ms-2">Quản lý Yêu cầu máu &rarr;</a>
+<a th:href="@{/admin/inventory}" class="btn btn-light fw-bold ms-2">Quản lý Kho máu &rarr;</a>
 </body>
 </html>
