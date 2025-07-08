@@ -29,15 +29,20 @@ public class StaffController {
 
     @Autowired
     private StaffDashboardService staffDashboardService;
+
     @Autowired
     private RequestService requestService;
+
     @Autowired
     private EmergencyRequestService emergencyRequestService;
+
     @Autowired
     private BloodInventoryService inventoryService;
+
     @Autowired
     private BloodTypeRepository bloodTypeRepository;
 
+    // --- DASHBOARD ---
     @GetMapping("/dashboard")
     public String showStaffDashboard(Model model) {
         model.addAttribute("pendingRequests", staffDashboardService.getPendingEmergencyRequestCount());
@@ -47,6 +52,26 @@ public class StaffController {
         return "staff/dashboard";
     }
 
+    // --- QUẢN LÝ QUY TRÌNH HIẾN MÁU (2 CỘT) ---
+    @GetMapping("/donors/manage")
+    public String showDonorManagementPage(
+            @RequestParam(name = "approvedPage", defaultValue = "0") int approvedPage,
+            @RequestParam(name = "contactedPage", defaultValue = "0") int contactedPage,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        Pageable approvedPageable = PageRequest.of(approvedPage, size);
+        Page<DonationRegistration> approvedDonors = requestService.findApprovedDonationRegistrations(approvedPageable);
+        model.addAttribute("approvedDonorsPage", approvedDonors);
+
+        Pageable contactedPageable = PageRequest.of(contactedPage, size);
+        Page<DonationRegistration> contactedDonors = requestService.findContactedDonationRegistrations(contactedPageable);
+        model.addAttribute("contactedDonorsPage", contactedDonors);
+
+        return "staff/donor-management";
+    }
+
+    // --- QUẢN LÝ KHO MÁU ---
     @GetMapping("/inventory")
     public String showInventoryManagement(Model model) {
         model.addAttribute("inventorySummary", inventoryService.getInventorySummary());
@@ -67,6 +92,7 @@ public class StaffController {
         return "redirect:/staff/inventory";
     }
 
+    // --- QUẢN LÝ YÊU CẦU MÁU KHẨN CẤP ---
     @GetMapping("/emergency-requests")
     public String showEmergencyRequestList(@RequestParam(defaultValue = "0") int page,
                                            @RequestParam(defaultValue = "10") int size,
@@ -99,6 +125,7 @@ public class StaffController {
         return "redirect:/staff/emergency-requests";
     }
 
+    // --- DUYỆT ĐƠN ĐĂNG KÝ HIẾN MÁU ---
     @GetMapping("/requests")
     public String showRequestManagementPage(
             @RequestParam(name = "donorPage", defaultValue = "0") int donorPage,
@@ -108,6 +135,8 @@ public class StaffController {
         model.addAttribute("donationRegistrationPage", donationRegistrationPage);
         return "staff/request-management";
     }
+
+    // --- CÁC HÀNH ĐỘNG (ACTIONS) ---
 
     @PostMapping("/donations/{id}/approve")
     public String approveDonation(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -131,35 +160,15 @@ public class StaffController {
         return "redirect:/staff/requests";
     }
 
-    @GetMapping("/donors/approved")
-    public String showApprovedDonorsPage(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size,
-                                         Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DonationRegistration> approvedDonorsPage = requestService.findApprovedDonationRegistrations(pageable);
-        model.addAttribute("approvedDonorsPage", approvedDonorsPage);
-        return "staff/approved-donors";
-    }
-
     @PostMapping("/donations/{id}/contact")
     public String contactDonation(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             requestService.contactDonationRegistration(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật trạng thái 'Đã liên hệ' thành công.");
+            redirectAttributes.addFlashAttribute("successMessage", "Đã chuyển người hiến sang danh sách chờ hoàn tất.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
-        return "redirect:/staff/donors/approved";
-    }
-
-    @GetMapping("/donors/contacted")
-    public String showContactedDonorsPage(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size,
-                                          Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DonationRegistration> contactedDonorsPage = requestService.findContactedDonationRegistrations(pageable);
-        model.addAttribute("contactedDonorsPage", contactedDonorsPage);
-        return "staff/contacted-donors";
+        return "redirect:/staff/donors/manage";
     }
 
     @PostMapping("/donations/{id}/complete")
@@ -170,6 +179,6 @@ public class StaffController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
-        return "redirect:/staff/donors/contacted";
+        return "redirect:/staff/donors/manage";
     }
 }

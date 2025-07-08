@@ -1,7 +1,10 @@
 package com.blood_donation.blood_donation.service;
 
+import com.blood_donation.blood_donation.dto.BlogCreationDto;
 import com.blood_donation.blood_donation.entity.Blog;
+import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.repository.BlogRepository;
+import com.blood_donation.blood_donation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,17 +19,16 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogRepository blogRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Blog> findLatestPublishedBlogs(int limit) {
-        // Tạo một đối tượng Pageable để yêu cầu trang đầu tiên (index 0) với số lượng 'limit'
         Pageable pageable = PageRequest.of(0, limit);
-        // Gọi phương thức repository đã tạo ở bước 1
         return blogRepository.findByStatusOrderByCreatedAtDesc(Blog.Status.PUBLISHED, pageable).getContent();
     }
     @Override
     public Page<Blog> findAllPublished(Pageable pageable) {
-        // Chỉ cần gọi phương thức repository đã có sẵn từ trước
         return blogRepository.findByStatusOrderByCreatedAtDesc(Blog.Status.PUBLISHED, pageable);
     }
 
@@ -36,4 +38,45 @@ public class BlogServiceImpl implements BlogService {
                 .filter(blog -> blog.getStatus() == Blog.Status.PUBLISHED);
     }
 
+    @Override
+    public void createBlog(BlogCreationDto dto, String username) {
+        User author = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng."));
+
+        Blog blog = new Blog();
+        blog.setTitle(dto.getTitle());
+        blog.setContent(dto.getContent());
+        blog.setAuthor(author);
+        blog.setStatus(Blog.Status.PENDING_APPROVAL);
+
+        blogRepository.save(blog);
+    }
+
+    @Override
+    public List<Blog> findBlogsByAuthor(String username) {
+        User author = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng."));
+        return blogRepository.findByAuthorOrderByCreatedAtDesc(author);
+    }
+
+    @Override
+    public Page<Blog> findPendingBlogs(Pageable pageable) {
+        return blogRepository.findByStatus(Blog.Status.PENDING_APPROVAL, pageable);
+    }
+
+    @Override
+    public void approveBlog(Integer blogId) {
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết."));
+        blog.setStatus(Blog.Status.PUBLISHED);
+        blogRepository.save(blog);
+    }
+
+    @Override
+    public void rejectBlog(Integer blogId) {
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết."));
+        blog.setStatus(Blog.Status.REJECTED);
+        blogRepository.save(blog);
+    }
 }

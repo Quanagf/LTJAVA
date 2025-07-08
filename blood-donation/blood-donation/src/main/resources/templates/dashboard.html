@@ -47,8 +47,9 @@
              <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
              <div class="card-body">
                 <h5 class="card-title">Chào mừng Admin!</h5>
-                <p class="card-text">Bạn có quyền truy cập các chức năng quản lý hệ thống.</p>
-                <a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
+                <p class="card-text">Bạn có quyền truy cập các chức năng quản trị hệ thống.</p>
+                <a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng</a>
+                <a th:href="@{/admin/blogs/pending}" class="btn btn-light fw-bold ms-2">Duyệt Blog</a>
              </div>
         </div>
     </div>
@@ -99,6 +100,15 @@
                     <h5 class="card-title">Yêu cầu máu khẩn cấp</h5>
                     <p class="card-text">Tạo một yêu cầu cần máu cho bản thân hoặc người thân.</p>
                     <a th:href="@{/requests/emergency/new}" class="btn btn-warning mt-auto">Tạo yêu cầu</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mt-4">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Chia sẻ kinh nghiệm</h5>
+                    <p class="card-text">Viết và quản lý các bài blog của bạn để chia sẻ với cộng đồng.</p>
+                    <a th:href="@{/member/blogs/my-posts}" class="btn btn-info mt-auto">Bài viết của tôi</a>
                 </div>
             </div>
         </div>

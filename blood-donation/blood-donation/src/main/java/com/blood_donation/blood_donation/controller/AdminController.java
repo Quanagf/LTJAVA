@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
 import com.blood_donation.blood_donation.dto.AdminUserEditDto;
+import com.blood_donation.blood_donation.entity.Blog;
 import com.blood_donation.blood_donation.entity.User;
+import com.blood_donation.blood_donation.service.BlogService;
 import com.blood_donation.blood_donation.service.UserService;
 
 @Controller
@@ -28,6 +30,10 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BlogService blogService;
+
+    // --- QUẢN LÝ NGƯỜI DÙNG ---
     @GetMapping("/users")
     public String listUsers(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "10") int size,
@@ -89,9 +95,7 @@ public class AdminController {
     }
 
     @PostMapping("/users/{id}/lock")
-    public String lockUser(@PathVariable("id") Integer id,
-                           RedirectAttributes redirectAttributes,
-                           Principal principal) {
+    public String lockUser(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, Principal principal) {
         try {
             userService.lockUser(id, principal.getName());
             redirectAttributes.addFlashAttribute("successMessage", "Đã khóa tài khoản thành công.");
@@ -109,9 +113,7 @@ public class AdminController {
     }
 
     @PostMapping("/users/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id,
-                             RedirectAttributes redirectAttributes,
-                             Principal principal) {
+    public String deleteUser(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, Principal principal) {
         try {
             userService.deleteUser(id, principal.getName());
             redirectAttributes.addFlashAttribute("successMessage", "Đã xóa người dùng thành công.");
@@ -119,5 +121,38 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/admin/users";
+    }
+
+    // --- DUYỆT BÀI VIẾT BLOG ---
+    @GetMapping("/blogs/pending")
+    public String showPendingBlogs(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size,
+                                   Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Blog> pendingBlogs = blogService.findPendingBlogs(pageable);
+        model.addAttribute("blogPage", pendingBlogs);
+        return "admin/blog-approval";
+    }
+
+    @PostMapping("/blogs/{id}/approve")
+    public String approveBlog(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            blogService.approveBlog(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã duyệt và đăng bài viết thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/blogs/pending";
+    }
+
+    @PostMapping("/blogs/{id}/reject")
+    public String rejectBlog(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            blogService.rejectBlog(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối bài viết.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/blogs/pending";
     }
 }

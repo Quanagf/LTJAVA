@@ -1,13 +1,23 @@
 package com.blood_donation.blood_donation.service;
 
-import com.blood_donation.blood_donation.entity.Blog;
-import org.springframework.data.domain.Page; // Thêm import
-import org.springframework.data.domain.Pageable; // Thêm import
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.blood_donation.blood_donation.dto.BlogCreationDto;
+import com.blood_donation.blood_donation.entity.Blog;
 
 public interface BlogService {
     List<Blog> findLatestPublishedBlogs(int limit);
     Page<Blog> findAllPublished(Pageable pageable);
     Optional<Blog> findPublishedById(Integer id);
+
+    // Mới
+    void createBlog(BlogCreationDto dto, String username);
+    List<Blog> findBlogsByAuthor(String username);
+    Page<Blog> findPendingBlogs(Pageable pageable);
+    void approveBlog(Integer blogId);
+    void rejectBlog(Integer blogId);
 }

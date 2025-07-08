@@ -1,18 +1,25 @@
 package com.blood_donation.blood_donation.service;
 
-import com.blood_donation.blood_donation.entity.BloodUnit;
-import com.blood_donation.blood_donation.entity.DonationRegistration;
-import com.blood_donation.blood_donation.entity.EmergencyRequest;
-import com.blood_donation.blood_donation.entity.MedicalCenter;
-import com.blood_donation.blood_donation.repository.*;
-import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.blood_donation.blood_donation.entity.BloodUnit;
+import com.blood_donation.blood_donation.entity.DonationRegistration;
+import com.blood_donation.blood_donation.entity.EmergencyRequest;
+import com.blood_donation.blood_donation.entity.MedicalCenter;
+import com.blood_donation.blood_donation.repository.BloodTypeRepository;
+import com.blood_donation.blood_donation.repository.BloodUnitRepository;
+import com.blood_donation.blood_donation.repository.DonationRegistrationRepository;
+import com.blood_donation.blood_donation.repository.EmergencyRequestRepository;
+import com.blood_donation.blood_donation.repository.MedicalCenterRepository;
+import com.blood_donation.blood_donation.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -113,9 +120,9 @@ public class RequestServiceImpl implements RequestService {
         BloodUnit newBloodUnit = new BloodUnit();
         newBloodUnit.setBloodType(registration.getBloodType());
         newBloodUnit.setMedicalCenter(defaultCenter);
-        newBloodUnit.setQuantity(1);
+        newBloodUnit.setQuantity(1); // Mặc định mỗi lần hiến là 1 đơn vị
         newBloodUnit.setStatus(BloodUnit.Status.AVAILABLE);
-        newBloodUnit.setExpiryDate(LocalDate.now().plusDays(42));
+        newBloodUnit.setExpiryDate(LocalDate.now().plusDays(42)); // Máu có hạn sử dụng 42 ngày
         bloodUnitRepository.save(newBloodUnit);
     }
 }
