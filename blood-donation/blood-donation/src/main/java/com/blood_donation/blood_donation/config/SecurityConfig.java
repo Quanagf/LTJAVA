@@ -23,20 +23,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public paths
-                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error","/forgot-password").permitAll()
-                        .requestMatchers("/blogs/**", "/blood-info").permitAll()
-                        // Admin specific paths
+                        // 1. Phân quyền cho các vai trò cụ thể
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        // Staff specific paths
                         .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
-                        // Member specific paths
-                        .requestMatchers("/dashboard").authenticated()
-                        .requestMatchers("/donations/register", "/donations/history", "/donations/edit/**", "/donations/update").hasAuthority("MEMBER")
-                        .requestMatchers("/requests/emergency/new", "/requests/emergency").hasAuthority("MEMBER")
-                        .requestMatchers("/profile/**").hasAuthority("MEMBER")
-                        .requestMatchers("/member/blogs/**").hasAuthority("MEMBER") // <-- Rule mới cho Member
-                        // General authenticated paths
+                        .requestMatchers("/member/**").hasAuthority("MEMBER")
+                        .requestMatchers("/donations/**", "/requests/emergency/**").hasAuthority("MEMBER")
+                        
+                        // 2. Phân quyền cho các trang chung của người dùng đã đăng nhập
+                        .requestMatchers("/dashboard", "/profile/**").authenticated() // <-- ĐÂY LÀ THAY ĐỔI QUAN TRỌNG
+
+                        // 3. Các trang công khai cho tất cả mọi người
+                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error", "/forgot-password", "/blogs/**", "/blood-info").permitAll()
+                        
+                        // 4. Bất kỳ yêu cầu nào khác đều cần đăng nhập
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
