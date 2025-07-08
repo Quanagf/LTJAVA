@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.blood_donation.blood_donation.dto.BloodUnitDto;
+import com.blood_donation.blood_donation.entity.BloodUnit;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.EmergencyRequest;
 import com.blood_donation.blood_donation.repository.BloodTypeRepository;
@@ -29,15 +30,20 @@ public class StaffController {
 
     @Autowired
     private StaffDashboardService staffDashboardService;
+
     @Autowired
     private RequestService requestService;
+
     @Autowired
     private EmergencyRequestService emergencyRequestService;
+
     @Autowired
     private BloodInventoryService inventoryService;
+
     @Autowired
     private BloodTypeRepository bloodTypeRepository;
 
+    // --- DASHBOARD ---
     @GetMapping("/dashboard")
     public String showStaffDashboard(Model model) {
         model.addAttribute("pendingRequests", staffDashboardService.getPendingEmergencyRequestCount());
@@ -47,8 +53,25 @@ public class StaffController {
         return "staff/dashboard";
     }
 
+    // --- DUYỆT ĐƠN ĐĂNG KÝ HIẾN MÁU ---
+    @GetMapping("/requests")
+    public String showRequestManagementPage(
+            @RequestParam(name = "donorPage", defaultValue = "0") int donorPage,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(donorPage, size);
+        Page<DonationRegistration> donationRegistrationPage = requestService.findPendingDonationRegistrations(pageable);
+        model.addAttribute("donationRegistrationPage", donationRegistrationPage);
+        return "staff/request-management";
+    }
+
+    // --- QUẢN LÝ QUY TRÌNH HIẾN MÁU (2 CỘT) ---
     @GetMapping("/donors/manage")
-    public String showDonorManagementPage(@RequestParam(name = "approvedPage", defaultValue = "0") int approvedPage, @RequestParam(name = "contactedPage", defaultValue = "0") int contactedPage, @RequestParam(defaultValue = "5") int size, Model model) {
+    public String showDonorManagementPage(
+            @RequestParam(name = "approvedPage", defaultValue = "0") int approvedPage,
+            @RequestParam(name = "contactedPage", defaultValue = "0") int contactedPage,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
         Pageable approvedPageable = PageRequest.of(approvedPage, size);
         Page<DonationRegistration> approvedDonors = requestService.findApprovedDonationRegistrations(approvedPageable);
         model.addAttribute("approvedDonorsPage", approvedDonors);
@@ -58,6 +81,18 @@ public class StaffController {
         return "staff/donor-management";
     }
 
+    // --- LỊCH SỬ HIẾN MÁU ---
+    @GetMapping("/donors/history")
+    public String showDonorHistory(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size,
+                                   Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DonationRegistration> historyPage = requestService.findCompletedDonations(pageable);
+        model.addAttribute("historyPage", historyPage);
+        return "staff/donor-history";
+    }
+
+    // --- QUẢN LÝ KHO MÁU ---
     @GetMapping("/inventory")
     public String showInventoryManagement(Model model) {
         model.addAttribute("inventorySummary", inventoryService.getInventorySummary());
@@ -77,42 +112,50 @@ public class StaffController {
         return "redirect:/staff/inventory";
     }
 
+    @GetMapping("/inventory/details")
+    public String showInventoryDetails(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size,
+                                       Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BloodUnit> unitPage = inventoryService.findAllAvailableUnits(pageable);
+        model.addAttribute("unitPage", unitPage);
+        return "staff/inventory-details";
+    }
+
+    @PostMapping("/inventory/use/{id}")
+    public String useBloodUnit(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            inventoryService.useBloodUnit(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã sử dụng 1 đơn vị máu thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/staff/inventory/details";
+    }
+    
+    @PostMapping("/inventory/delete/{id}")
+    public String deleteBloodUnit(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            inventoryService.deleteBloodUnit(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đơn vị máu thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/staff/inventory/details";
+    }
+
+    // --- QUẢN LÝ YÊU CẦU MÁU KHẨN CẤP ---
     @GetMapping("/emergency-requests")
-    public String showEmergencyRequestList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+    public String showEmergencyRequestList(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size,
+                                           Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<EmergencyRequest> requestPage = emergencyRequestService.findAllRequests(pageable);
         model.addAttribute("requestPage", requestPage);
         return "staff/emergency-request-list";
     }
 
-    @PostMapping("/emergency-requests/{id}/approve")
-    public String approveEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        try {
-            emergencyRequestService.approveRequest(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã phê duyệt yêu cầu thành công.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
-        }
-        return "redirect:/staff/emergency-requests";
-    }
-
-    @PostMapping("/emergency-requests/{id}/reject")
-    public String rejectEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        try {
-            emergencyRequestService.rejectRequest(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
-        }
-        return "redirect:/staff/emergency-requests";
-    }
-
-    @GetMapping("/requests")
-    public String showRequestManagementPage(@RequestParam(name = "donorPage", defaultValue = "0") int donorPage, @RequestParam(defaultValue = "5") int size, Model model) {
-        Page<DonationRegistration> donationRegistrationPage = requestService.findPendingDonationRegistrations(PageRequest.of(donorPage, size));
-        model.addAttribute("donationRegistrationPage", donationRegistrationPage);
-        return "staff/request-management";
-    }
+    // --- CÁC HÀNH ĐỘNG (ACTIONS) ---
 
     @PostMapping("/donations/{id}/approve")
     public String approveDonation(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -156,5 +199,27 @@ public class StaffController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/staff/donors/manage";
+    }
+
+    @PostMapping("/emergency-requests/{id}/approve")
+    public String approveEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            emergencyRequestService.approveRequest(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã phê duyệt yêu cầu thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/staff/emergency-requests";
+    }
+
+    @PostMapping("/emergency-requests/{id}/reject")
+    public String rejectEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            emergencyRequestService.rejectRequest(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/staff/emergency-requests";
     }
 }

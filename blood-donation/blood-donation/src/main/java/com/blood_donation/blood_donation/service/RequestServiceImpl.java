@@ -22,14 +22,10 @@ import jakarta.transaction.Transactional;
 @Service
 public class RequestServiceImpl implements RequestService {
 
-    @Autowired
-    private EmergencyRequestRepository emergencyRequestRepository;
-    @Autowired
-    private DonationRegistrationRepository donationRegistrationRepository;
-    @Autowired
-    private BloodUnitRepository bloodUnitRepository;
-    @Autowired
-    private MedicalCenterRepository medicalCenterRepository;
+    @Autowired private EmergencyRequestRepository emergencyRequestRepository;
+    @Autowired private DonationRegistrationRepository donationRegistrationRepository;
+    @Autowired private BloodUnitRepository bloodUnitRepository;
+    @Autowired private MedicalCenterRepository medicalCenterRepository;
 
     @Override
     public Page<EmergencyRequest> findPendingEmergencyRequests(Pageable pageable) {
@@ -101,7 +97,7 @@ public class RequestServiceImpl implements RequestService {
         donationRegistrationRepository.save(registration);
 
         MedicalCenter defaultCenter = medicalCenterRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy trung tâm y tế mặc định với ID = 1. Vui lòng kiểm tra CSDL."));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy trung tâm y tế mặc định với ID = 1."));
         BloodUnit newBloodUnit = new BloodUnit();
         newBloodUnit.setBloodType(registration.getBloodType());
         newBloodUnit.setMedicalCenter(defaultCenter);
@@ -109,5 +105,10 @@ public class RequestServiceImpl implements RequestService {
         newBloodUnit.setStatus(BloodUnit.Status.AVAILABLE);
         newBloodUnit.setExpiryDate(LocalDate.now().plusDays(42));
         bloodUnitRepository.save(newBloodUnit);
+    }
+
+    @Override
+    public Page<DonationRegistration> findCompletedDonations(Pageable pageable) {
+        return donationRegistrationRepository.findByStatusOrderByCreatedAtDesc(DonationRegistration.Status.COMPLETED, pageable);
     }
 }

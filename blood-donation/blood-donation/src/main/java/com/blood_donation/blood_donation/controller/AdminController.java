@@ -130,6 +130,14 @@ public class AdminController {
         model.addAttribute("blogPage", pendingBlogs);
         return "admin/blog-approval";
     }
+    
+    @GetMapping("/blogs/review/{id}")
+    public String showBlogReviewPage(@PathVariable("id") Integer id, Model model) {
+        Blog blog = blogService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết."));
+        model.addAttribute("blog", blog);
+        return "admin/blog-review";
+    }
 
     @PostMapping("/blogs/{id}/approve")
     public String approveBlog(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {

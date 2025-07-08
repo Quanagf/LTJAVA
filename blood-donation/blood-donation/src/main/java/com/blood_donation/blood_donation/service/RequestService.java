@@ -15,4 +15,5 @@ public interface RequestService {
     Page<DonationRegistration> findContactedDonationRegistrations(Pageable pageable);
     void contactDonationRegistration(Integer registrationId);
     void completeDonation(Integer registrationId);
+    Page<DonationRegistration> findCompletedDonations(Pageable pageable);
 }

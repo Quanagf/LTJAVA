@@ -26,11 +26,11 @@ public class SecurityConfig {
                         // 1. Phân quyền cho các vai trò cụ thể
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
-                        .requestMatchers("/member/**").hasAuthority("MEMBER")
+                        .requestMatchers("/member/blogs/**").hasAuthority("MEMBER")
                         .requestMatchers("/donations/**", "/requests/emergency/**").hasAuthority("MEMBER")
                         
                         // 2. Phân quyền cho các trang chung của người dùng đã đăng nhập
-                        .requestMatchers("/dashboard", "/profile/**").authenticated() // <-- ĐÂY LÀ THAY ĐỔI QUAN TRỌNG
+                        .requestMatchers("/dashboard", "/profile/**").authenticated()
 
                         // 3. Các trang công khai cho tất cả mọi người
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error", "/forgot-password", "/blogs/**", "/blood-info").permitAll()
