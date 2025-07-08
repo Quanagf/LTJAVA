@@ -29,31 +29,43 @@
         </a>
     </div>
 
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
         <tr>
             <th>ID</th>
             <th>Họ và Tên</th>
             <th>Tên đăng nhập</th>
-            <th>Email</th>
             <th>Vai trò</th>
-            <th>Hành động</th>
+            <th>Trạng thái</th> <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${userPage.content}">
-            <td th:text="${user.id}">1</td>
-            <td th:text="${user.fullName}">Nguyễn Văn A</td>
-            <td th:text="${user.username}">nguyenvana</td>
-            <td th:text="${user.email}">a@example.com</td>
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.username}"></td>
+            <td><span class="badge" style="color: black;" th:classappend=... th:text="${user.role.name()}"></span></td>
             <td>
-                <span class="badge"
-                      th:classappend="${user.role.name() == 'ADMIN'} ? 'bg-danger' : (${user.role.name() == 'STAFF'} ? 'bg-success' : 'bg-secondary')"
-                      th:text="${user.role.name()}"></span>
+                <span th:if="${user.locked}" class="badge bg-secondary">Đã khóa</span>
+                <span th:unless="${user.locked}" class="badge bg-success">Hoạt động</span>
             </td>
             <td>
-                <a href="#" class="btn btn-sm btn-warning">Sửa</a>
-                <a href="#" class="btn btn-sm btn-danger">Xóa</a>
+                <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-info">Sửa</a>
+
+                <form th:if="${!user.locked}" th:action="@{/admin/users/{id}/lock(id=${user.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-warning">Khóa</button>
+                </form>
+                <form th:if="${user.locked}" th:action="@{/admin/users/{id}/unlock(id=${user.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-success">Mở khóa</button>
+                </form>
+
+                <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            th:disabled="${#authentication.name == user.username}"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.')">
+                        Xóa
+                    </button>
+                </form>
             </td>
         </tr>
         </tbody>

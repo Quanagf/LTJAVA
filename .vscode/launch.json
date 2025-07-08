@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BloodDonationApplication<blood-donation>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.blood_donation.blood_donation.BloodDonationApplication",
+            "projectName": "blood-donation",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
