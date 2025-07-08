@@ -42,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Admin Section -->
     <div class="col-12 mb-4" sec:authorize="hasAuthority('ADMIN')">
         <div class="card text-white bg-danger">
              <div class="card-header fs-5 fw-bold">Khu vực Quản trị viên</div>
@@ -50,13 +49,10 @@
                 <h5 class="card-title">Chào mừng Admin!</h5>
                 <p class="card-text">Bạn có quyền truy cập các chức năng quản lý hệ thống.</p>
                 <a th:href="@{/admin/users}" class="btn btn-light fw-bold">Quản lý Người dùng &rarr;</a>
-                <a th:href="@{/admin/emergency-requests}" class="btn btn-light fw-bold ms-2">Quản lý Yêu cầu máu &rarr;</a>
-                <a th:href="@{/admin/inventory}" class="btn btn-light fw-bold ms-2">Quản lý Kho máu &rarr;</a>
              </div>
         </div>
     </div>
 
-    <!-- Staff Section -->
     <div class="col-12 mb-4" sec:authorize="hasAuthority('STAFF')">
         <div class="card text-white bg-primary">
              <div class="card-header fs-5 fw-bold">Khu vực Vận hành</div>
@@ -69,7 +65,6 @@
         </div>
     </div>
 
-    <!-- Member Section -->
     <div class="row" sec:authorize="hasAuthority('MEMBER')">
         <div class="col-md-4">
             <div class="card text-center h-100">
