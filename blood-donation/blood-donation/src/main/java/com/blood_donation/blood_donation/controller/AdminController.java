@@ -31,6 +31,7 @@ import com.blood_donation.blood_donation.service.BloodInventoryService;
 import com.blood_donation.blood_donation.service.UserService; // Thêm import
 import com.blood_donation.blood_donation.service.DonationService;
 import com.blood_donation.blood_donation.service.EmergencyRequestService;
+import com.blood_donation.blood_donation.service.ReportService;
 import com.blood_donation.blood_donation.entity.EmergencyRequest;
 
 
@@ -304,6 +305,18 @@ public class AdminController {
         model.addAttribute("currentStatus", status);
 
         return "admin/blood-unit-list";
+    }
+
+    @Autowired
+    private ReportService reportService; // Thêm service
+
+    @GetMapping("/reports")
+    public String showReportsPage(Model model) {
+        model.addAttribute("userCounts", reportService.countUsersByRole());
+        model.addAttribute("completedDonations", reportService.countCompletedDonations());
+        model.addAttribute("donationsThisMonth", reportService.countCompletedDonationsThisMonth());
+        model.addAttribute("pendingRequests", reportService.countPendingEmergencyRequests());
+        return "admin/reports";
     }
 
 }

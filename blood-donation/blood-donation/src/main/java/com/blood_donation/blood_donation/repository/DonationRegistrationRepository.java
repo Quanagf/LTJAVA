@@ -1,5 +1,6 @@
 package com.blood_donation.blood_donation.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,6 @@ public interface DonationRegistrationRepository extends JpaRepository<DonationRe
     long countByStatus(DonationRegistration.Status status);
 
     List<DonationRegistration> findByStatusOrderByCreatedAtDesc(DonationRegistration.Status status);
+    long countByStatusAndCompletedAtBetween(DonationRegistration.Status status, LocalDateTime start, LocalDateTime end);
+
 }
