@@ -1,52 +1,43 @@
 package com.blood_donation.blood_donation.config;
-
-import com.blood_donation.blood_donation.service.UserDetailsServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.blood_donation.blood_donation.service.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
+        @Autowired
     private UserDetailsServiceImpl userDetailsService;
-
-    // Cấu hình bộ lọc bảo mật chính
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF để test với Postman, bật lại khi triển khai thực tế
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Các đường dẫn công khai
+                        // Public paths
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
                         .requestMatchers("/blogs/**", "/blood-info").permitAll()
-
-                        // Các đường dẫn yêu cầu đăng nhập
-                        .requestMatchers("/dashboard", "/profile/**").authenticated()
-                        .requestMatchers("/donations/**").authenticated()
-
-                        // Các chức năng dành cho Member
-                        .requestMatchers("/donations/register", "/requests/emergency").hasAuthority("ADMIN")
-
-                        // Chức năng của Staff và Admin
-                        .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
-
-                        // Chức năng của Admin
+                        // Admin specific paths
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
-
-                        // Các request còn lại đều yêu cầu đăng nhập
-                        .requestMatchers("/requests/emergency/**").hasAnyAuthority("MEMBER", "STAFF", "ADMIN")
+                        // Admin can also manage their own profile
+                        .requestMatchers("/profile/**").authenticated() // All authenticated users can manage their profile
+                        // Staff specific paths
+                        .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN") // Admin also has staff privileges
+                        // Staff can also manage their own profile
+                        .requestMatchers("/donations/register", "/donations/history", "/donations/edit/**", "/donations/update").hasAnyAuthority("MEMBER", "STAFF", "ADMIN") // Staff can also register/view donations
+                        .requestMatchers("/requests/emergency/new", "/requests/emergency").hasAnyAuthority("MEMBER", "STAFF", "ADMIN") // Staff can also create emergency requests
+                        // Member specific paths
+                        .requestMatchers("/dashboard").authenticated() // All authenticated users can access dashboard
+                        .requestMatchers("/donations/register", "/donations/history", "/donations/edit/**", "/donations/update").hasAuthority("MEMBER")
+                        .requestMatchers("/requests/emergency/new", "/requests/emergency").hasAuthority("MEMBER")
+                        .requestMatchers("/profile/**").hasAuthority("MEMBER") // Member can manage their own profile
+                        // General authenticated paths (if not covered by specific roles above)
                         .anyRequest().authenticated()
-
                 )
-                // Cấu hình form đăng nhập
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -54,7 +45,6 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
-                // Cấu hình đăng xuất
                 .logout(logout -> logout
                         .logoutUrl("/perform_logout")
                         .logoutSuccessUrl("/login?logout=true")
@@ -62,17 +52,6 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
-
         return http.build();
     }
-
-    /*
-    // Nếu bạn dùng encode mật khẩu khi đăng ký:
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    */
-
 }
