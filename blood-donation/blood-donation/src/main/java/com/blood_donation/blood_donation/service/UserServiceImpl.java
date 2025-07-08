@@ -245,4 +245,22 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(userToDelete);
     }
+
+    @Override
+    public Page<User> findAllUsers(Pageable pageable, String role) {
+        // Nếu có tham số role được truyền vào và nó không rỗng
+        if (role != null && !role.isEmpty()) {
+            try {
+                // Chuyển chuỗi role thành kiểu Enum
+                User.Role userRole = User.Role.valueOf(role.toUpperCase());
+                // Gọi phương thức mới trong repository
+                return userRepository.findByRole(userRole, pageable);
+            } catch (IllegalArgumentException e) {
+                // Nếu role không hợp lệ, trả về tất cả user
+                return userRepository.findAll(pageable);
+            }
+        }
+        // Nếu không có role, trả về tất cả user
+        return userRepository.findAll(pageable);
+    }
 }

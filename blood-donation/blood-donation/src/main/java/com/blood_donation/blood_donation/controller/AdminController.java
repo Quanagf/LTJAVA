@@ -65,14 +65,18 @@ public class AdminController {
     @GetMapping("/users")
     public String listUsers(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String role, // Thêm tham số role
                             Model model) {
-        
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = userService.findAllUsers(pageable);
+        // Truyền role vào service
+        Page<User> userPage = userService.findAllUsers(pageable, role);
 
         model.addAttribute("userPage", userPage);
+        model.addAttribute("allRoles", User.Role.values()); // Để hiển thị danh sách role trong dropdown
+        model.addAttribute("currentRole", role); // Để giữ lại giá trị đã lọc
 
-        return "admin/user-list"; // Trả về file user-list.html trong thư mục con admin
+        return "admin/user-list";
     }
 
     @GetMapping("/users/add")

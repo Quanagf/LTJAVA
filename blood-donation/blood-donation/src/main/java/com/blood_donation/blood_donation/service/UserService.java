@@ -29,4 +29,6 @@ public interface UserService {
 
     void deleteUser(Integer userIdToDelete, String adminUsername);
 
+    Page<User> findAllUsers(Pageable pageable, String role);
+
 }
