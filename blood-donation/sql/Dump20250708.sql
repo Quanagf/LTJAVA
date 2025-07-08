@@ -1,11 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `blood_donation_support` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `blood_donation_support`;
 -- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
 -- Host: localhost    Database: blood_donation_support
 -- ------------------------------------------------------
 -- Server version	8.0.42
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -88,7 +85,7 @@ DROP TABLE IF EXISTS `blood_types`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blood_types` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `blood_group` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `blood_group` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `rh_factor` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_blood_type` (`blood_group`,`rh_factor`)
@@ -125,7 +122,7 @@ CREATE TABLE `blood_units` (
   KEY `medical_center_id` (`medical_center_id`),
   CONSTRAINT `blood_units_ibfk_1` FOREIGN KEY (`blood_type_id`) REFERENCES `blood_types` (`id`),
   CONSTRAINT `blood_units_ibfk_2` FOREIGN KEY (`medical_center_id`) REFERENCES `medical_centers` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,6 +131,7 @@ CREATE TABLE `blood_units` (
 
 LOCK TABLES `blood_units` WRITE;
 /*!40000 ALTER TABLE `blood_units` DISABLE KEYS */;
+INSERT INTO `blood_units` VALUES (1,9,'AVAILABLE',7,1,'2025-07-23','2025-07-08 08:06:19');
 /*!40000 ALTER TABLE `blood_units` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,10 +146,10 @@ CREATE TABLE `donation_registrations` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `blood_type_id` int NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
-  `latitude` decimal(10,8) DEFAULT NULL,
-  `longitude` decimal(11,8) DEFAULT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `latitude` decimal(38,2) DEFAULT NULL,
+  `longitude` decimal(38,2) DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `gender` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `province` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `available_date` date NOT NULL,
@@ -189,10 +187,10 @@ CREATE TABLE `emergency_requests` (
   `patient_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `blood_type_id` int NOT NULL,
   `quantity_needed` int NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
-  `latitude` decimal(10,8) DEFAULT NULL,
-  `longitude` decimal(11,8) DEFAULT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `latitude` decimal(38,2) DEFAULT NULL,
+  `longitude` decimal(38,2) DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` text COLLATE utf8mb4_unicode_ci,
   `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -201,7 +199,7 @@ CREATE TABLE `emergency_requests` (
   KEY `blood_type_id` (`blood_type_id`),
   CONSTRAINT `emergency_requests_ibfk_1` FOREIGN KEY (`requester_user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `emergency_requests_ibfk_2` FOREIGN KEY (`blood_type_id`) REFERENCES `blood_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,6 +208,7 @@ CREATE TABLE `emergency_requests` (
 
 LOCK TABLES `emergency_requests` WRITE;
 /*!40000 ALTER TABLE `emergency_requests` DISABLE KEYS */;
+INSERT INTO `emergency_requests` VALUES (1,9,'adw',4,4121,'đâ',NULL,NULL,'ădad','dâd','PROCESSING','2025-07-08 05:38:31');
 /*!40000 ALTER TABLE `emergency_requests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -250,20 +249,26 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `full_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `national_id` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `national_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `role` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `blood_type_id` int DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `reset_password_token_expiry` datetime(6) DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `dateOfBirth` date DEFAULT NULL,
+  `position` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   KEY `FKb2uxwxbut1bsd70hlwk311j3o` (`blood_type_id`),
   CONSTRAINT `FKb2uxwxbut1bsd70hlwk311j3o` FOREIGN KEY (`blood_type_id`) REFERENCES `blood_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -272,7 +277,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (8,'Trần Hoàng Quân','quan1109','quantranhoang24@gmail.com','$2a$10$I/5/o5tt3gKXUmDOsEsiaem04AlMLhe7SrO7ObZYb5539zuVcZnqK',NULL,'MEMBER','2025-07-06 22:27:26',NULL),(9,'Lâm Hoàng Tuấn','admin','lamhoangtuan25@gmai.com','$2a$10$sMcf2mTLu0JbY0T2HAGeuOxcFTIGEb1nozE9836wPA9XpM9nt6Swa',NULL,'ADMIN','2025-07-07 06:29:21',NULL),(10,'Nguyễn Văn A','staff1','a@a.a','$2a$10$qJSxZdbhEUGZxGHIzBhrOebqSlgmBjW/MFasqKIUu4zFLeonRPqq6',NULL,'STAFF','2025-07-07 07:05:26',NULL);
+INSERT INTO `users` VALUES (9,'Lâm Hoàng Tuấn','admin','lamhoangtuan25@gmai.com','$2a$10$sMcf2mTLu0JbY0T2HAGeuOxcFTIGEb1nozE9836wPA9XpM9nt6Swa',NULL,'ADMIN','2025-07-07 06:29:21',NULL,NULL,NULL,NULL,NULL,NULL,0),(10,'Nguyễn Văn A','staff1','a@a.a','$2a$10$qJSxZdbhEUGZxGHIzBhrOebqSlgmBjW/MFasqKIUu4zFLeonRPqq6',NULL,'STAFF','2025-07-07 07:05:26',NULL,NULL,NULL,NULL,NULL,NULL,0),(11,'quantran1109','quantran1109','k@adw.k','$2a$10$Ho8GEf0WZYrCGlePZ.gknupmxCP3HHdGwYoeJWdgAJ1Gb5D6WbAJq','','STAFF','2025-07-08 05:59:18',NULL,NULL,'2025-07-08 07:30:51.624780','',NULL,'Chia sẽ Blog',0),(12,'Trần Hoàng Quân','quan1109','quantranhoang24@gmail.com','$2a$10$Zzw7wBq6IfjyhY3KMFbpl.KdA7xfR5dX6xTwSmi5AsjY2JMFMpHh2','3131314','MEMBER','2025-07-08 06:47:33',NULL,NULL,NULL,NULL,NULL,NULL,0),(13,'Trần Hoàng Quân','ozawa','ozawa@ada.haa','$2a$10$90SVkWlz9/Ob9mYsQvzkJ.uaGaDxcrD35h6g3TC3HO8haVrHPZp3u','','MEMBER','2025-07-08 07:53:06',NULL,NULL,NULL,'091013131311331',NULL,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -285,4 +290,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-07 14:08:17
+-- Dump completed on 2025-07-08 17:52:38
