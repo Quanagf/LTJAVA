@@ -11,11 +11,8 @@ public interface RequestService {
     Page<DonationRegistration> findPendingDonationRegistrations(Pageable pageable);
     void approveDonationRegistration(Integer registrationId);
     void rejectDonationRegistration(Integer registrationId);
-
-    // Đã phục hồi 2 phương thức này
     Page<DonationRegistration> findApprovedDonationRegistrations(Pageable pageable);
     Page<DonationRegistration> findContactedDonationRegistrations(Pageable pageable);
-
     void contactDonationRegistration(Integer registrationId);
     void completeDonation(Integer registrationId);
 }

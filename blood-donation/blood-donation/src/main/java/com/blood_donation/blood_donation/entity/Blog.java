@@ -45,7 +45,6 @@ public class Blog {
     @JoinColumn(name = "author_id")
     private User author;
 
-    // Cập nhật Enum Status
     public enum Status { DRAFT, PENDING_APPROVAL, PUBLISHED, REJECTED, ARCHIVED }
 
     @PrePersist
@@ -53,7 +52,7 @@ public class Blog {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (status == null) {
-            status = Status.PENDING_APPROVAL; // Mặc định khi tạo mới
+            status = Status.PENDING_APPROVAL;
         }
     }
 

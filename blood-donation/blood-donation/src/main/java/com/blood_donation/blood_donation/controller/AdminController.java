@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
 import com.blood_donation.blood_donation.dto.AdminUserEditDto;
+import com.blood_donation.blood_donation.dto.BlogCreationDto;
 import com.blood_donation.blood_donation.entity.Blog;
 import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.service.BlogService;
@@ -55,8 +56,7 @@ public class AdminController {
     }
 
     @PostMapping("/users/save")
-    public String saveNewUser(@ModelAttribute("userDto") AdminUserCreationDto userDto,
-                              RedirectAttributes redirectAttributes) {
+    public String saveNewUser(@ModelAttribute("userDto") AdminUserCreationDto userDto, RedirectAttributes redirectAttributes) {
         try {
             userService.createUserByAdmin(userDto);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm người dùng mới thành công!");
@@ -70,8 +70,7 @@ public class AdminController {
 
     @GetMapping("/users/edit/{id}")
     public String showUserEditForm(@PathVariable("id") Integer id, Model model) {
-        User user = userService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        User user = userService.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         AdminUserEditDto dto = new AdminUserEditDto();
         dto.setId(user.getId());
         dto.setFullName(user.getFullName());
@@ -125,9 +124,7 @@ public class AdminController {
 
     // --- DUYỆT BÀI VIẾT BLOG ---
     @GetMapping("/blogs/pending")
-    public String showPendingBlogs(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "10") int size,
-                                   Model model) {
+    public String showPendingBlogs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Blog> pendingBlogs = blogService.findPendingBlogs(pageable);
         model.addAttribute("blogPage", pendingBlogs);
@@ -154,5 +151,47 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/admin/blogs/pending";
+    }
+    
+    // --- QUẢN LÝ BLOG TOÀN DIỆN ---
+    @GetMapping("/blogs")
+    public String showBlogManagementPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Blog> blogPage = blogService.findAllBlogs(pageable);
+        model.addAttribute("blogPage", blogPage);
+        return "admin/blog-list";
+    }
+
+    @GetMapping("/blogs/edit/{id}")
+    public String showEditBlogForm(@PathVariable("id") Integer id, Model model) {
+        Blog blog = blogService.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết."));
+        BlogCreationDto dto = new BlogCreationDto();
+        dto.setTitle(blog.getTitle());
+        dto.setContent(blog.getContent());
+        model.addAttribute("blogDto", dto);
+        model.addAttribute("blogId", id);
+        return "admin/blog-edit-form";
+    }
+
+    @PostMapping("/blogs/update/{id}")
+    public String updateBlog(@PathVariable("id") Integer id, @ModelAttribute("blogDto") BlogCreationDto blogDto, RedirectAttributes redirectAttributes) {
+        try {
+            blogService.updateBlogByAdmin(id, blogDto);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật bài viết thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/blogs";
+    }
+
+    @PostMapping("/blogs/delete/{id}")
+    public String deleteBlog(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            blogService.deleteBlog(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa bài viết thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/blogs";
     }
 }

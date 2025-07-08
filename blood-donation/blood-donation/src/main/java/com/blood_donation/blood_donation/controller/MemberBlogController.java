@@ -37,12 +37,10 @@ public class MemberBlogController {
     }
 
     @PostMapping("/save")
-    public String saveBlogPost(@ModelAttribute("blogDto") BlogCreationDto blogDto,
-                               Principal principal,
-                               RedirectAttributes redirectAttributes) {
+    public String saveBlogPost(@ModelAttribute("blogDto") BlogCreationDto blogDto, Principal principal, RedirectAttributes redirectAttributes) {
         try {
             blogService.createBlog(blogDto, principal.getName());
-            redirectAttributes.addFlashAttribute("successMessage", "Đã gửi bài viết thành công! Vui lòng chờ Staff duyệt.");
+            redirectAttributes.addFlashAttribute("successMessage", "Đã gửi bài viết thành công! Vui lòng chờ duyệt.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }

@@ -10,14 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.blood_donation.blood_donation.entity.Blog;
 import com.blood_donation.blood_donation.entity.User;
 
-
 @Repository
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> findByStatusOrderByCreatedAtDesc(Blog.Status status, Pageable pageable);
-
-    // Mới: Tìm tất cả bài viết của một tác giả
     List<Blog> findByAuthorOrderByCreatedAtDesc(User author);
-
-    // Mới: Tìm các bài viết theo trạng thái (cho Staff duyệt)
     Page<Blog> findByStatus(Blog.Status status, Pageable pageable);
 }
