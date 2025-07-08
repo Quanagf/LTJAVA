@@ -51,23 +51,10 @@
         <div class="card-body">
             </div>
     </div>
-    <nav th:if="${requestPage.totalPages > 1}" class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${requestPage.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number - 1}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}">Previous</a>
-            </li>
-            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, requestPage.totalPages - 1)}" th:classappend="${pageNumber == requestPage.number} ? 'active'">
-                <a class="page-link" th:href="@{/admin/emergency-requests(page=${pageNumber}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}" th:text="${pageNumber + 1}"></a>
-            </li>
-            <li class="page-item" th:classappend="${requestPage.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number + 1}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}">Next</a>
-            </li>
-        </ul>
-    </nav>
     <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mt-4">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
@@ -91,9 +78,9 @@
                         <td th:text="${#temporals.format(req.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
                         <td>
                             <span class="badge"
-                                  th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 
-                   req.status.name() == 'PROCESSING' ? 'bg-info text-dark' : 
-                   req.status.name() == 'COMPLETED' ? 'bg-success' : 
+                                  th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning text-dark' :
+                   req.status.name() == 'PROCESSING' ? 'bg-info text-dark' :
+                   req.status.name() == 'COMPLETED' ? 'bg-success' :
                    req.status.name() == 'CANCELLED' ? 'bg-secondary' : 'bg-dark'}"
                                   th:text="${req.status.name()}">
                             </span>
@@ -107,6 +94,11 @@
                                     <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
                                 </form>
                             </div>
+                            <div th:if="${req.status.name() == 'PROCESSING'}">
+                                <a th:href="@{/staff/emergency-requests/process/{requestId}(requestId=${req.id})}" class="btn btn-sm btn-primary">
+                                    Xử lý & Tìm người hiến
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${requestPage.empty}">
@@ -116,11 +108,11 @@
                 </table>
             </div>
 
-            <nav aria-label="Page navigation" th:if="${requestPage.totalPages > 1}">
+            <nav aria-label="Page navigation" th:if="${requestPage.totalPages > 1}" class="mt-4">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${requestPage.first} ? 'disabled'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number - 1})}">Previous</a></li>
-                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, requestPage.totalPages - 1)}" th:classappend="${pageNumber == requestPage.number} ? 'active'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${pageNumber})}" th:text="${pageNumber + 1}"></a></li>
-                    <li class="page-item" th:classappend="${requestPage.last} ? 'disabled'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number + 1})}">Next</a></li>
+                    <li class="page-item" th:classappend="${requestPage.first} ? 'disabled'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number - 1}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}">Previous</a></li>
+                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, requestPage.totalPages - 1)}" th:classappend="${pageNumber == requestPage.number} ? 'active'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${pageNumber}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}" th:text="${pageNumber + 1}"></a></li>
+                    <li class="page-item" th:classappend="${requestPage.last} ? 'disabled'"><a class="page-link" th:href="@{/admin/emergency-requests(page=${requestPage.number + 1}, bloodTypeId=${currentBloodTypeId}, phone=${currentPhone}, status=${currentStatus})}">Next</a></li>
                 </ul>
             </nav>
         </div>

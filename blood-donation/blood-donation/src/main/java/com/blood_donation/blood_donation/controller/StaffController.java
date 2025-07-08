@@ -1,5 +1,7 @@
 package com.blood_donation.blood_donation.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,7 @@ import com.blood_donation.blood_donation.entity.BloodUnit;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.EmergencyRequest;
 import com.blood_donation.blood_donation.repository.BloodTypeRepository;
+import com.blood_donation.blood_donation.repository.DonationRegistrationRepository;
 import com.blood_donation.blood_donation.service.BloodInventoryService;
 import com.blood_donation.blood_donation.service.EmergencyRequestService;
 import com.blood_donation.blood_donation.service.RequestService;
@@ -42,6 +45,9 @@ public class StaffController {
 
     @Autowired
     private BloodTypeRepository bloodTypeRepository;
+
+    @Autowired
+    private DonationRegistrationRepository donationRegistrationRepository;
 
     // --- DASHBOARD ---
     @GetMapping("/dashboard")
@@ -153,6 +159,26 @@ public class StaffController {
         Page<EmergencyRequest> requestPage = emergencyRequestService.findAllRequests(pageable);
         model.addAttribute("requestPage", requestPage);
         return "staff/emergency-request-list";
+    }
+    
+    @GetMapping("/emergency-requests/process/{requestId}")
+    public String showProcessRequestPage(@PathVariable("requestId") Integer requestId, Model model) {
+        EmergencyRequest request = emergencyRequestService.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Yêu cầu không tồn tại"));
+        
+        if (request.getStatus() != EmergencyRequest.Status.PROCESSING) {
+            // Chỉ xử lý các yêu cầu có trạng thái PROCESSING
+            return "redirect:/staff/emergency-requests";
+        }
+
+        model.addAttribute("request", request);
+
+        // Tìm những người đã đăng ký hiến máu phù hợp
+        List<DonationRegistration> potentialDonors = donationRegistrationRepository
+                .findByStatusAndBloodType(DonationRegistration.Status.APPROVED, request.getBloodType());
+        model.addAttribute("potentialDonors", potentialDonors);
+        
+        return "staff/process-emergency-request";
     }
 
     // --- CÁC HÀNH ĐỘNG (ACTIONS) ---

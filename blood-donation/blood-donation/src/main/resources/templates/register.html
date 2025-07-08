@@ -45,6 +45,13 @@
                             <label for="nationalId" class="form-label">Số CMND/CCCD</label>
                             <input type="text" class="form-control" id="nationalId" th:field="*{nationalId}" required>
                         </div>
+                         <div class="mb-3">
+                            <label for="bloodTypeId" class="form-label">Nhóm máu của bạn</label>
+                            <select class="form-select" id="bloodTypeId" th:field="*{bloodTypeId}">
+                                <option value="">-- Tôi không biết/chưa rõ --</option>
+                                <option th:each="bt : ${bloodTypes}" th:value="${bt.id}" th:text="${bt.toString()}"></option>
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Địa chỉ</label>
                             <input type="text" class="form-control" id="address" th:field="*{address}" required>

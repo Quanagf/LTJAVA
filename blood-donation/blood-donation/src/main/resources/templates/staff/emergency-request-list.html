@@ -64,6 +64,11 @@
                                     <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
                                 </form>
                             </div>
+                            <div th:if="${req.status.name() == 'PROCESSING'}">
+                                <a th:href="@{/staff/emergency-requests/process/{requestId}(requestId=${req.id})}" class="btn btn-sm btn-primary">
+                                    Xử lý & Tìm người hiến
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${requestPage.empty}">

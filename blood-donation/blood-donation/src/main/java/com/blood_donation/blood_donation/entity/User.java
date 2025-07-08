@@ -6,13 +6,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Entity; // Import all from jakarta.persistence
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -38,10 +40,15 @@ public class User {
     private String nationalId;
     private LocalDate dateOfBirth;
     private String phone;
-    private String address; // <-- ADDED
-    private String province; // <-- ADDED
+    private String address;
+    private String province;
     private String position;
     private boolean locked = false;
+
+    // --- NEW FIELD ---
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blood_type_id")
+    private BloodType bloodType;
 
     @Enumerated(EnumType.STRING)
     private Role role;

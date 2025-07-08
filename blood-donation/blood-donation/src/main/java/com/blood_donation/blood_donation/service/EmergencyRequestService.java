@@ -1,9 +1,12 @@
 package com.blood_donation.blood_donation.service;
 
-import com.blood_donation.blood_donation.dto.EmergencyRequestDto;
-import com.blood_donation.blood_donation.entity.EmergencyRequest;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.blood_donation.blood_donation.dto.EmergencyRequestDto;
+import com.blood_donation.blood_donation.entity.EmergencyRequest; // Thêm import
 
 public interface EmergencyRequestService {
     Page<EmergencyRequest> findAllRequests(Pageable pageable);
@@ -11,5 +14,5 @@ public interface EmergencyRequestService {
     void rejectRequest(Integer requestId);
     void createEmergencyRequest(EmergencyRequestDto dto, String username);
     Page<EmergencyRequest> findAllRequests(Pageable pageable, Integer bloodTypeId, String phone, EmergencyRequest.Status status);
-
+    Optional<EmergencyRequest> findById(Integer id); // <-- ADDED
 }

@@ -13,10 +13,11 @@ public class AdminUserEditDto {
     private String email;
     private User.Role role;
     private String username;
-    private String phone; // <-- ADDED
-    private String nationalId; // <-- ADDED
-    private String address; // <-- ADDED
-    private String province; // <-- ADDED
-    private LocalDate dateOfBirth; // <-- ADDED
-    private String position; // <-- ADDED
+    private String phone;
+    private String nationalId;
+    private String address;
+    private String province;
+    private LocalDate dateOfBirth;
+    private String position;
+    private Integer bloodTypeId; // <-- ADDED
 }

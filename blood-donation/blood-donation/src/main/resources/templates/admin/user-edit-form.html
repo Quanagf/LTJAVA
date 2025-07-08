@@ -50,6 +50,13 @@
                     <input type="text" class="form-control" id="position" th:field="*{position}">
                 </div>
                 <div class="mb-3">
+                    <label for="bloodTypeId" class="form-label">Nhóm máu</label>
+                    <select class="form-select" id="bloodTypeId" th:field="*{bloodTypeId}">
+                        <option value="">-- Không xác định --</option>
+                        <option th:each="bt : ${bloodTypes}" th:value="${bt.id}" th:text="${bt.toString()}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label for="role" class="form-label">Vai trò</label>
                     <select class="form-select" id="role" th:field="*{role}" required>
                         <option th:each="roleOpt : ${allRoles}"

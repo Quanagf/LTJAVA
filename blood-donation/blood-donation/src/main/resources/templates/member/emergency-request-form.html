@@ -39,8 +39,11 @@
                 <input type="tel" class="form-control" id="phone" th:field="*{phone}" required>
             </div>
             <div class="mb-3">
-                <label for="address" class="form-label">Địa chỉ bệnh viện</label>
-                <input type="text" class="form-control" id="address" th:field="*{address}" required>
+                <label for="medicalCenterId" class="form-label">Bệnh viện</label>
+                <select class="form-select" id="medicalCenterId" th:field="*{medicalCenterId}" required>
+                    <option value="">-- Chọn bệnh viện --</option>
+                    <option th:each="center : ${medicalCenters}" th:value="${center.id}" th:text="${center.name} + ' - ' + ${center.address}"></option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="reason" class="form-label">Lý do/Ghi chú</label>

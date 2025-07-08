@@ -1,24 +1,27 @@
 package com.blood_donation.blood_donation.service;
 
-import com.blood_donation.blood_donation.dto.EmergencyRequestDto;
-import com.blood_donation.blood_donation.entity.BloodType;
-import com.blood_donation.blood_donation.entity.BloodUnit;
-import com.blood_donation.blood_donation.entity.EmergencyRequest;
-import com.blood_donation.blood_donation.repository.BloodTypeRepository;
-import com.blood_donation.blood_donation.repository.BloodUnitRepository;
-import com.blood_donation.blood_donation.repository.EmergencyRequestRepository;
-import com.blood_donation.blood_donation.repository.UserRepository;
-import com.blood_donation.blood_donation.entity.User;
+import java.util.List;
+import java.util.Optional;
 
-
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.blood_donation.blood_donation.dto.EmergencyRequestDto;
+import com.blood_donation.blood_donation.entity.BloodType;
+import com.blood_donation.blood_donation.entity.BloodUnit;
+import com.blood_donation.blood_donation.entity.EmergencyRequest;
+import com.blood_donation.blood_donation.entity.MedicalCenter;
+import com.blood_donation.blood_donation.entity.User;
+import com.blood_donation.blood_donation.repository.BloodTypeRepository;
+import com.blood_donation.blood_donation.repository.BloodUnitRepository;
+import com.blood_donation.blood_donation.repository.EmergencyRequestRepository;
+import com.blood_donation.blood_donation.repository.MedicalCenterRepository;
+import com.blood_donation.blood_donation.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmergencyRequestServiceImpl implements EmergencyRequestService {
@@ -28,11 +31,15 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
 
     @Autowired
     private BloodUnitRepository bloodUnitRepository;
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private BloodTypeRepository bloodTypeRepository;
+
+    @Autowired
+    private MedicalCenterRepository medicalCenterRepository;
 
     @Override
     public Page<EmergencyRequest> findAllRequests(Pageable pageable) {
@@ -49,13 +56,10 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
             throw new IllegalStateException("Chỉ có thể phê duyệt yêu cầu đang ở trạng thái chờ.");
         }
 
-        // Lấy tổng số lượng máu có sẵn trong kho cho nhóm máu này
         Long availableQuantity = bloodUnitRepository.getInventorySummaryByBloodType(request.getBloodType().getId());
         if (availableQuantity == null) availableQuantity = 0L;
 
-        // Kịch bản 1: Kho đủ máu
         if (availableQuantity >= request.getQuantityNeeded()) {
-            // Trừ máu từ kho
             int quantityToDeduct = request.getQuantityNeeded();
             List<BloodUnit> availableUnits = bloodUnitRepository.findByBloodTypeIdAndStatusOrderByExpiryDateAsc(request.getBloodType().getId(), BloodUnit.Status.AVAILABLE);
 
@@ -69,10 +73,8 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
                 bloodUnitRepository.save(unit);
                 quantityToDeduct -= deductAmount;
             }
-            // Đánh dấu yêu cầu là hoàn thành
             request.setStatus(EmergencyRequest.Status.COMPLETED);
         } else {
-            // Kịch bản 2: Kho không đủ máu
             request.setStatus(EmergencyRequest.Status.PROCESSING);
         }
         emergencyRequestRepository.save(request);
@@ -90,19 +92,22 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
         request.setStatus(EmergencyRequest.Status.CANCELLED);
         emergencyRequestRepository.save(request);
     }
+
     @Override
     public void createEmergencyRequest(EmergencyRequestDto dto, String username) {
         User requester = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng."));
         BloodType bloodType = bloodTypeRepository.findById(dto.getBloodTypeId())
                 .orElseThrow(() -> new RuntimeException("Nhóm máu không hợp lệ."));
+        MedicalCenter center = medicalCenterRepository.findById(dto.getMedicalCenterId())
+                .orElseThrow(() -> new RuntimeException("Bệnh viện không hợp lệ."));
 
         EmergencyRequest newRequest = new EmergencyRequest();
         newRequest.setRequesterUser(requester);
         newRequest.setPatientName(dto.getPatientName());
         newRequest.setBloodType(bloodType);
         newRequest.setQuantityNeeded(dto.getQuantityNeeded());
-        newRequest.setAddress(dto.getAddress());
+        newRequest.setMedicalCenter(center);
         newRequest.setPhone(dto.getPhone());
         newRequest.setReason(dto.getReason());
         newRequest.setStatus(EmergencyRequest.Status.PENDING);
@@ -112,9 +117,12 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
 
     @Override
     public Page<EmergencyRequest> findAllRequests(Pageable pageable, Integer bloodTypeId, String phone, EmergencyRequest.Status status) {
-        // Tạo Specification từ các tham số lọc
         Specification<EmergencyRequest> spec = EmergencyRequestSpecification.filterBy(bloodTypeId, phone, status);
-        // Gọi phương thức findAll có Specification
         return emergencyRequestRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public Optional<EmergencyRequest> findById(Integer id) {
+        return emergencyRequestRepository.findById(id);
     }
 }
