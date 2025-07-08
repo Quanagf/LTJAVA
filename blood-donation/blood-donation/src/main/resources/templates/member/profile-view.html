@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,8 +31,9 @@
                 <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
                 <p><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(user.dateOfBirth, 'dd-MM-yyyy')}"></span></p>
                 <p><strong>Số điện thoại:</strong> <span th:text="${user.phone != null ? user.phone : 'Chưa cập nhật'}"></span></p>
-                
-                <p><strong>CMND/CCCD:</strong> <span th:text="${user.nationalId}"></span></p>
+                <p><strong>CMND/CCCD:</strong> <span th:text="${user.nationalId != null ? user.nationalId : 'Chưa cập nhật'}"></span></p>
+                <p><strong>Địa chỉ:</strong> <span th:text="${user.address != null ? user.address : 'Chưa cập nhật'}"></span></p>
+                <p><strong>Tỉnh/Thành phố:</strong> <span th:text="${user.province != null ? user.province : 'Chưa cập nhật'}"></span></p>
                 <div sec:authorize="hasAnyAuthority('STAFF', 'ADMIN')">
                     <p><strong>Chức vụ:</strong> <span th:text="${user.position != null ? user.position : 'Chưa cập nhật'}"></span></p>
                 </div>

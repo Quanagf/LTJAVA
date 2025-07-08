@@ -9,7 +9,9 @@ public class UserProfileDto {
     private String fullName;
     private String email;
     private String nationalId;
-    private LocalDate dateOfBirth; // <-- THÊM DÒNG NÀY
-    private String phone;         // <-- THÊM DÒNG NÀY
+    private LocalDate dateOfBirth;
+    private String phone;
+    private String address; // <-- ADDED
+    private String province; // <-- ADDED
     private String position;
 }

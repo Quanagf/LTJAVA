@@ -37,16 +37,16 @@ public class User {
     private String password;
     private String nationalId;
     private LocalDate dateOfBirth;
-    private String phone; // <-- THÊM THUỘC TÍNH NÀY
-    private String position; // <-- THÊM THUỘC TÍNH NÀY
-    private boolean locked = false; // <-- THÊM THUỘC TÍNH NÀY
+    private String phone;
+    private String address; // <-- ADDED
+    private String province; // <-- ADDED
+    private String position;
+    private boolean locked = false;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     private LocalDateTime createdAt;
-
-    
 
     // --- RELATIONSHIPS ---
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

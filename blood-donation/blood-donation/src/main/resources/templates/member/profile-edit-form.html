@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"><title>Chỉnh sửa Hồ sơ</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,6 +41,14 @@
             <div class="mb-3">
                 <label for="nationalId" class="form-label">CMND/CCCD</label>
                 <input type="text" class="form-control" id="nationalId" th:field="*{nationalId}">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa chỉ</label>
+                <input type="text" class="form-control" id="address" th:field="*{address}">
+            </div>
+            <div class="mb-3">
+                <label for="province" class="form-label">Tỉnh/Thành phố</label>
+                <input type="text" class="form-control" id="province" th:field="*{province}">
             </div>
             <div class="mb-3" sec:authorize="hasAnyAuthority('STAFF', 'ADMIN')">
                 <label for="position" class="form-label">Chức vụ</label>
