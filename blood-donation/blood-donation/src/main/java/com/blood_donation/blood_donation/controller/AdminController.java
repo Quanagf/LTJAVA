@@ -22,10 +22,12 @@ import com.blood_donation.blood_donation.dto.AdminUserCreationDto;
 import com.blood_donation.blood_donation.dto.AdminUserEditDto;
 import com.blood_donation.blood_donation.dto.BlogCreationDto;
 import com.blood_donation.blood_donation.entity.Blog;
+import com.blood_donation.blood_donation.entity.BloodUnit;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.repository.BloodTypeRepository;
 import com.blood_donation.blood_donation.service.BlogService;
+import com.blood_donation.blood_donation.service.BloodInventoryService;
 import com.blood_donation.blood_donation.service.UserService; // Thêm import
 import com.blood_donation.blood_donation.service.DonationService;
 import com.blood_donation.blood_donation.service.EmergencyRequestService;
@@ -51,6 +53,8 @@ public class AdminController {
 
     @Autowired
     private EmergencyRequestService emergencyRequestService; 
+    @Autowired
+    private BloodInventoryService bloodInventoryService; 
 
 
 
@@ -280,6 +284,26 @@ public class AdminController {
         model.addAttribute("currentStatus", status);
 
         return "admin/emergency-request-list";
+    }
+
+    @GetMapping("/blood-units")
+    public String showBloodUnitList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer bloodTypeId,
+            @RequestParam(required = false) BloodUnit.Status status,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BloodUnit> unitPage = bloodInventoryService.findAllUnits(pageable, bloodTypeId, status);
+
+        model.addAttribute("unitPage", unitPage);
+        model.addAttribute("bloodTypes", bloodTypeRepository.findAll());
+        model.addAttribute("allStatuses", BloodUnit.Status.values());
+        model.addAttribute("currentBloodTypeId", bloodTypeId);
+        model.addAttribute("currentStatus", status);
+
+        return "admin/blood-unit-list";
     }
 
 }

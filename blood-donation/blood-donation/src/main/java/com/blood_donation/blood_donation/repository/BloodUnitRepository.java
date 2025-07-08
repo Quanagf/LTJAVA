@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.blood_donation.blood_donation.entity.BloodUnit;
 
 @Repository
-public interface BloodUnitRepository extends JpaRepository<BloodUnit, Integer> {
+public interface BloodUnitRepository extends JpaRepository<BloodUnit, Integer>, JpaSpecificationExecutor<BloodUnit> {
     @Query("SELECT new com.blood_donation.blood_donation.dto.BloodUnitSummaryDto(bu.bloodType, SUM(bu.quantity)) " +
             "FROM BloodUnit bu WHERE bu.status = 'AVAILABLE' GROUP BY bu.bloodType")
     List<com.blood_donation.blood_donation.dto.BloodUnitSummaryDto> getInventorySummary();

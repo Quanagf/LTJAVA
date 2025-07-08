@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.blood_donation.blood_donation.dto.BloodUnitDto;
@@ -73,5 +74,10 @@ public class BloodInventoryServiceImpl implements BloodInventoryService {
             throw new RuntimeException("Không tìm thấy đơn vị máu với ID: " + unitId);
         }
         bloodUnitRepository.deleteById(unitId);
+    }
+    @Override
+    public Page<BloodUnit> findAllUnits(Pageable pageable, Integer bloodTypeId, BloodUnit.Status status) {
+        Specification<BloodUnit> spec = BloodUnitSpecification.filterBy(bloodTypeId, status);
+        return bloodUnitRepository.findAll(spec, pageable);
     }
 }

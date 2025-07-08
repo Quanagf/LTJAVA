@@ -15,4 +15,5 @@ public interface BloodInventoryService {
     Page<BloodUnit> findAllAvailableUnits(Pageable pageable);
     void useBloodUnit(Integer unitId);
     void deleteBloodUnit(Integer unitId);
+    Page<BloodUnit> findAllUnits(Pageable pageable, Integer bloodTypeId, BloodUnit.Status status);
 }
