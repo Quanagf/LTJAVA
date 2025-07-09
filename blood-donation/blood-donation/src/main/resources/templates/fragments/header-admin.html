@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">ADMIN PANEL</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAdmin">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAdmin">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/users}">Người dùng</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/blogs}">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/donation-registrations}">Đăng ký hiến máu</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/emergency-requests}">Yêu cầu khẩn cấp</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/blood-units}">Kho máu</a></li>
+                 <li class="nav-item"><a class="nav-link" th:href="@{/admin/reports}">Báo cáo</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-shield me-1"></i>
+                        <span th:text="${loggedInUser.fullName}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" th:href="@{/dashboard}">Dashboard chính</a></li>
+                        <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/perform_logout}" method="post" class="d-inline">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

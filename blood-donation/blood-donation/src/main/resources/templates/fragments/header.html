@@ -31,10 +31,8 @@
                         <span th:text="${loggedInUser.fullName}"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
-                        <li><hr class="dropdown-divider"></li>
-
                         <div sec:authorize="hasAuthority('MEMBER')">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
                             <li><a class="dropdown-item" th:href="@{/donations/register}">Đăng ký hiến máu</a></li>
                             <li><a class="dropdown-item" th:href="@{/donations/history}">Lịch sử hiến máu</a></li>
                             <li><a class="dropdown-item" th:href="@{/member/blogs/my-posts}">Bài viết của tôi</a></li>
@@ -42,6 +40,7 @@
 
                         <div sec:authorize="hasAuthority('STAFF')">
                             <li><a class="dropdown-item" th:href="@{/staff/dashboard}">Bảng điều khiển nhân viên</a></li>
+                             <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
                         </div>
 
                         <div sec:authorize="hasAuthority('ADMIN')">
