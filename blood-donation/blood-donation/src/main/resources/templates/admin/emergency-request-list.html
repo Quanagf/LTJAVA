@@ -57,7 +57,6 @@
                         <th>Người yêu cầu</th>
                         <th>Ngày tạo</th>
                         <th>Trạng thái</th>
-                        <th>Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -75,21 +74,6 @@
                    req.status.name() == 'CANCELLED' ? 'bg-secondary' : 'bg-dark'}"
                                   th:text="${req.status.name()}">
                             </span>
-                        </td>
-                        <td>
-                            <div th:if="${req.status.name() == 'PENDING'}">
-                                <form th:action="@{/admin/emergency-requests/{id}/approve(id=${req.id})}" method="post" class="d-inline-block me-1">
-                                    <button type="submit" class="btn btn-sm btn-success">Phê duyệt</button>
-                                </form>
-                                <form th:action="@{/admin/emergency-requests/{id}/reject(id=${req.id})}" method="post" class="d-inline-block">
-                                    <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
-                                </form>
-                            </div>
-                            <div th:if="${req.status.name() == 'PROCESSING'}">
-                                <a th:href="@{/staff/emergency-requests/process/{requestId}(requestId=${req.id})}" class="btn btn-sm btn-primary">
-                                    Xử lý & Tìm người hiến
-                                </a>
-                            </div>
                         </td>
                     </tr>
                     <tr th:if="${requestPage.empty}">

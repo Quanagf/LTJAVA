@@ -17,12 +17,13 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
-                    <thead><tr><th>Người hiến</th><th>Nhóm máu</th><th>Ngày hoàn tất</th></tr></thead>
+                    <thead><tr><th>Người hiến</th><th>Nhóm máu</th><th>Ngày hoàn tất</th><th>Ngày dược hiến máu tiếp theo</th></tr></thead>
                     <tbody>
                     <tr th:each="item : ${historyPage.content}">
                         <td th:text="${item.user.fullName}"></td>
                         <td><span class="badge bg-success" th:text="${item.bloodType}"></span></td>
                         <td th:text="${#temporals.format(item.completedAt, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${item.nextEligibleDate != null ? #temporals.format(item.nextEligibleDate, 'dd-MM-yyyy') : 'N/A'}"></td>
                     </tr>
                     </tbody>
                 </table>
