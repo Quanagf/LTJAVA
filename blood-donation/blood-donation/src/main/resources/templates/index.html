@@ -1,92 +1,106 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ - Hỗ trợ hiến máu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <style>
         .hero-section {
-            background: #f8f9fa;
-            padding: 4rem 0;
+            background: linear-gradient(to right, rgba(217, 83, 79, 0.1), rgba(255, 243, 224, 0.2)), url('https://images.unsplash.com/photo-1582719202449-37f2c6de3583?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Ymxvb2QsZG9uYXRlfHx8fHx8MTYyODM4MTM5Mg&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080');
+            background-size: cover;
+            background-position: center;
+            padding: 6rem 0;
+            color: #560d0d;
         }
-        .navbar-brand {
-            font-weight: bold;
+        .navbar-brand, .card-title, .section-title {
             color: #c81e1e !important;
+        }
+        .card {
+            transition: transform 0.2s;
+            border: 1px solid #eee;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .footer-dark {
+            background-color: #212529;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">
-            <img src="/images/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-            HỆ THỐNG HIẾN MÁU
-        </a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/blood-info}">Tài liệu nhóm máu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/blogs}">Blog kinh nghiệm</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="btn btn-outline-danger me-2" th:href="@{/login}">Đăng nhập</a>
-                    <a class="btn btn-danger" th:href="@{/register}">Đăng ký</a>
-                </li>
-                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                     <a class="btn btn-primary me-2" th:href="@{/dashboard}">Bảng điều khiển</a>
-                     <form th:action="@{/perform_logout}" method="post" class="d-inline">
-                         <button class="btn btn-outline-secondary" type="submit">Đăng xuất</button>
-                     </form>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <header class="hero-section text-center">
     <div class="container">
-        <h1 class="display-5" th:text="${center != null ? center.name : 'Trung tâm Hiến máu Nhân đạo'}">Trung tâm Hiến máu Nhân đạo</h1>
+        <h1 class="display-4 fw-bold" th:text="${center != null ? center.name : 'Đăng Ký Hiến Máu Nhân Đạo'}">Đăng Ký Hiến Máu Nhân Đạo</h1>
         <p class="lead" th:text="${center != null ? center.description : 'Mỗi giọt máu cho đi, một cuộc đời ở lại. Hãy cùng chúng tôi lan tỏa nghĩa cử cao đẹp này.'}">
-            Mỗi giọt máu cho đi, một cuộc đời ở lại. Hãy cùng chúng tôi lan tỏa nghĩa cử cao đẹp này.
+            Mỗi giọt máu cho đi, một cuộc đời ở lại.
         </p>
-        <a th:href="@{/donations/register}" class="btn btn-danger btn-lg" sec:authorize="isAuthenticated()">Đăng ký hiến máu ngay</a>
-        <a th:href="@{/register}" class="btn btn-danger btn-lg" sec:authorize="isAnonymous()">Tham gia cùng chúng tôi</a>
+        <a th:href="@{/donations/register}" class="btn btn-danger btn-lg" sec:authorize="isAuthenticated()"><i class="fas fa-heartbeat me-2"></i>Đăng ký hiến máu ngay</a>
+        <a th:href="@{/register}" class="btn btn-danger btn-lg" sec:authorize="isAnonymous()"><i class="fas fa-user-plus me-2"></i>Tham gia cùng chúng tôi</a>
     </div>
 </header>
 
 <main class="container my-5">
-    <h2 class="text-center mb-4">Chia sẻ kinh nghiệm</h2>
-    <div class="row">
-        <div th:if="${!latestBlogs.isEmpty()}">
-            <div class.col-md-4 mb-4 th:each="blog : ${latestBlogs}">
-                <div class="card h-100">
-                    <div class="card-body">
+
+    <section class="mb-5">
+        <h2 class="text-center mb-4 display-6 section-title">Chia sẻ kinh nghiệm</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="blog : ${latestBlogs}">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title" th:text="${blog.title}">Tiêu đề bài viết</h5>
-                        <p class="card-text">Đây là nội dung tóm tắt của bài viết, chia sẻ những kinh nghiệm quý báu...</p>
-                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="btn btn-link">Đọc thêm &rarr;</a>
+                        <p class="card-text text-muted">Đây là nội dung tóm tắt của bài viết, chia sẻ những kinh nghiệm quý báu...</p>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="btn btn-outline-danger mt-auto">Đọc thêm &rarr;</a>
                     </div>
-                    <div class="card-footer text-muted">
-                        Đăng ngày: <span th:text="${#temporals.format(blog.createdAt, 'dd-MM-yyyy')}"></span>
+                    <div class="card-footer text-muted small">
+                        <i class="far fa-calendar-alt me-1"></i> <span th:text="${#temporals.format(blog.createdAt, 'dd-MM-yyyy')}"></span>
                     </div>
                 </div>
             </div>
+            <div class="text-center mt-3" th:if="${#lists.isEmpty(latestBlogs)}">
+                <p class="text-muted">Chưa có bài viết nào được chia sẻ.</p>
+            </div>
         </div>
-        <div class="text-center" th:if="${latestBlogs.isEmpty()}">
-            <p>Chưa có bài viết nào được chia sẻ.</p>
+    </section>
+
+    <section class="mb-5 pt-4 border-top">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <h4 class="section-title pb-2">Điều Kiện Cần Thiết</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Độ tuổi: 18-60 tuổi.</li>
+                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Cân nặng: Nam &gt; 50kg, Nữ &gt; 45kg.</li>
+                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Tình trạng sức khỏe tốt.</li>
+                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Không mắc các bệnh truyền nhiễm.</li>
+                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Thời gian cách lần hiến máu trước: 12 tuần.</li>
+                </ul>
+            </div>
+            <div class="col-md-6 mb-4">
+                <h4 class="section-title pb-2">Quy Trình Hiến Máu</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">1</span>Đăng ký thông tin</li>
+                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">2</span>Khám sàng lọc</li>
+                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">3</span>Xét nghiệm máu</li>
+                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">4</span>Hiến máu</li>
+                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">5</span>Nghỉ ngơi và phục hồi</li>
+                </ul>
+            </div>
         </div>
-    </div>
+    </section>
 </main>
 
-<footer class="bg-light text-center text-lg-start mt-auto">
-    <div class="text-center p-3">
+<footer class="footer-dark text-center text-lg-start mt-auto py-4">
+    <div class="text-center">
         © 2025 Bản quyền: Hệ thống Hỗ trợ Hiến máu
     </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
