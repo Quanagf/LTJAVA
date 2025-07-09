@@ -47,7 +47,7 @@
 
 <main class="container my-5">
     <section class="mb-5">
-        <h2 class="text-center mb-4 display-6 section-title">Chia sẻ kinh nghiệm</h2>
+        <h2 class="text-center mb-4 display-6 section-title fw-bold">Chia sẻ kinh nghiệm</h2>
         <div class="row">
             <div class="col-md-4 mb-4" th:each="blog : ${latestBlogs}">
                 <div class="card h-100 shadow-sm">
@@ -69,27 +69,31 @@
 
     <section class="mb-5 pt-4 border-top">
         <div class="row">
-            <div class="col-md-6 mb-4">
-                <h4 class="section-title pb-2">Điều Kiện Cần Thiết</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Độ tuổi: 18-60 tuổi.</li>
-                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Cân nặng: Nam &gt; 50kg, Nữ &gt; 45kg.</li>
-                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Tình trạng sức khỏe tốt.</li>
-                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Không mắc các bệnh truyền nhiễm.</li>
-                    <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Thời gian cách lần hiến máu trước: 12 tuần.</li>
-                </ul>
-            </div>
-            <div class="col-md-6 mb-4">
-                <h4 class="section-title pb-2">Quy Trình Hiến Máu</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">1</span>Đăng ký thông tin</li>
-                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">2</span>Khám sàng lọc</li>
-                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">3</span>Xét nghiệm máu</li>
-                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">4</span>Hiến máu</li>
-                    <li class="list-group-item"><span class="badge bg-danger rounded-pill me-2">5</span>Nghỉ ngơi và phục hồi</li>
-                </ul>
-            </div>
-        </div>
+            <div class="row mb-4">
+  <div class="col-12">
+    <h4 class="section-title pb-2 bg-warning text-dark px-3 py-2 rounded">Điều Kiện Cần Thiết</h4>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Độ tuổi: 18-60 tuổi.</li>
+      <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Cân nặng: Nam &gt; 50kg, Nữ &gt; 45kg.</li>
+      <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Tình trạng sức khỏe tốt.</li>
+      <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Không mắc các bệnh truyền nhiễm.</li>
+      <li class="list-group-item"><i class="fas fa-check-circle text-danger me-2"></i>Thời gian cách lần hiến máu trước: 12 tuần.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <h4 class="section-title pb-2 bg-warning text-white px-3 py-2 rounded">Quy Trình Hiến Máu</h4>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><span class="badge bg-info rounded-pill me-2">1</span>Đăng ký thông tin</li>
+      <li class="list-group-item"><span class="badge bg-info rounded-pill me-2">2</span>Khám sàng lọc</li>
+      <li class="list-group-item"><span class="badge bg-info rounded-pill me-2">3</span>Xét nghiệm máu</li>
+      <li class="list-group-item"><span class="badge bg-info rounded-pill me-2">4</span>Hiến máu</li>
+      <li class="list-group-item"><span class="badge bg-info rounded-pill me-2">5</span>Nghỉ ngơi và phục hồi</li>
+    </ul>
+  </div>
+</div>
     </section>
 </main>
 
