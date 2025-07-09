@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold">STAFF PANEL</a>
+        <div class="collapse navbar-collapse" id="navbarNavStaff">
+             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/staff/dashboard}">Tổng quan</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/staff/requests}">Duyệt đơn</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/staff/donors/manage}">Quy trình hiến máu</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/staff/inventory}">Kho máu</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="staffDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-cog me-1"></i>
+                        <span th:text="${loggedInUser.fullName}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="staffDropdown">
+                        <li>
+                            <form th:action="@{/perform_logout}" method="post" class="d-inline">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

@@ -7,41 +7,37 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler; // Thêm import này
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-
-import com.blood_donation.blood_donation.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // Inject handler tùy chỉnh của bạn
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Phân quyền cho các vai trò cụ thể
+                        // Các quy tắc phân quyền giữ nguyên...
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/staff/**").hasAnyAuthority("STAFF", "ADMIN")
                         .requestMatchers("/member/blogs/**").hasAuthority("MEMBER")
                         .requestMatchers("/donations/**", "/requests/emergency/**").hasAuthority("MEMBER")
-                        
-                        // 2. Phân quyền cho các trang chung của người dùng đã đăng nhập
                         .requestMatchers("/dashboard", "/profile/**").authenticated()
-
-                        // 3. Các trang công khai cho tất cả mọi người
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error", "/forgot-password", "/blogs/**", "/blood-info").permitAll()
-                        
-                        // 4. Bất kỳ yêu cầu nào khác đều cần đăng nhập
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        // THAY ĐỔI Ở ĐÂY:
+                        // Xóa .defaultSuccessUrl(...) và thay bằng .successHandler(...)
+                        .successHandler(customAuthenticationSuccessHandler) 
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )

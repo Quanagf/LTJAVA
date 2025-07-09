@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" style="color: #c81e1e;" th:href="@{/}">HỆ THỐNG HIẾN MÁU</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/blood-info}">Tài liệu nhóm máu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/blogs}">Blog kinh nghiệm</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('MEMBER')">
+                    <a class="nav-link fw-bold text-warning" th:href="@{/requests/emergency/new}">Yêu cầu máu khẩn cấp</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="btn btn-outline-danger me-2" th:href="@{/login}">Đăng nhập</a>
+                    <a class="btn btn-danger" th:href="@{/register}">Đăng ký</a>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>
+                        <span th:text="${loggedInUser.fullName}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <div sec:authorize="hasAuthority('MEMBER')">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
+                            <li><a class="dropdown-item" th:href="@{/donations/register}">Đăng ký hiến máu</a></li>
+                            <li><a class="dropdown-item" th:href="@{/donations/history}">Lịch sử hiến máu</a></li>
+                            <li><a class="dropdown-item" th:href="@{/member/blogs/my-posts}">Bài viết của tôi</a></li>
+                        </div>
+
+                        <div sec:authorize="hasAuthority('STAFF')">
+                            <li><a class="dropdown-item" th:href="@{/staff/dashboard}">Bảng điều khiển nhân viên</a></li>
+                             <li><a class="dropdown-item" th:href="@{/profile}">Hồ sơ cá nhân</a></li>
+                        </div>
+
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                             <li><a class="dropdown-item" th:href="@{/admin/users}">Quản lý người dùng</a></li>
+                             <li><a class="dropdown-item" th:href="@{/admin/donation-registrations}">Quản lý đăng ký hiến máu</a></li>
+                             <li><a class="dropdown-item" th:href="@{/admin/emergency-requests}">Quản lý yêu cầu khẩn cấp</a></li>
+                             <li><a class="dropdown-item" th:href="@{/admin/blogs}">Quản lý Blog</a></li>
+                             <li><a class="dropdown-item" th:href="@{/admin/blood-units}">Quản lý kho máu</a></li>
+                              <li><a class="dropdown-item" th:href="@{/admin/reports}">Thống kê & Báo cáo</a></li>
+                        </div>
+
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/perform_logout}" method="post" class="d-inline">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>
