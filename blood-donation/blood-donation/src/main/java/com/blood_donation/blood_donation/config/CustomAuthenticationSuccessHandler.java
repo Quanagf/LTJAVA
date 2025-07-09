@@ -20,15 +20,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-        if (roles.contains("STAFF")) {
-            // Nếu là STAFF, chuyển hướng đến /staff/dashboard
+        // --- THAY ĐỔI Ở ĐÂY ---
+        if (roles.contains("ADMIN")) {
+            // Nếu là ADMIN, chuyển hướng đến trang báo cáo
+            response.sendRedirect("/admin/reports");
+        } else if (roles.contains("STAFF")) {
+            // Nếu là STAFF, chuyển hướng đến dashboard của nhân viên
             response.sendRedirect("/staff/dashboard");
-        } else if (roles.contains("ADMIN")) {
-            // Nếu là ADMIN, vẫn chuyển hướng đến /dashboard (nơi có các link quản trị)
-            response.sendRedirect("/dashboard");
         } else {
-            // Các vai trò khác (MEMBER) cũng chuyển hướng đến /dashboard
-            response.sendRedirect("/dashboard");
+            // Các vai trò khác (MEMBER) chuyển hướng đến dashboard chung
+            response.sendRedirect("/");
         }
     }
 }
