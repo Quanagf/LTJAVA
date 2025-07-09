@@ -29,18 +29,12 @@ import jakarta.transaction.Transactional;
 @Service
 public class EmergencyRequestServiceImpl implements EmergencyRequestService {
 
-    @Autowired
-    private EmergencyRequestRepository emergencyRequestRepository;
-    @Autowired
-    private BloodUnitRepository bloodUnitRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BloodTypeRepository bloodTypeRepository;
-    @Autowired
-    private MedicalCenterRepository medicalCenterRepository;
-    @Autowired
-    private BloodCompatibilityRuleRepository bloodCompatibilityRuleRepository;
+    @Autowired private EmergencyRequestRepository emergencyRequestRepository;
+    @Autowired private BloodUnitRepository bloodUnitRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private BloodTypeRepository bloodTypeRepository;
+    @Autowired private MedicalCenterRepository medicalCenterRepository;
+    @Autowired private BloodCompatibilityRuleRepository bloodCompatibilityRuleRepository;
 
     @Override
     public Page<EmergencyRequest> findAllRequests(Pageable pageable) {
@@ -52,18 +46,14 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
     public void approveRequest(Integer requestId) {
         EmergencyRequest request = emergencyRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu với ID: " + requestId));
-
         if (request.getStatus() != EmergencyRequest.Status.PENDING) {
             throw new IllegalStateException("Chỉ có thể phê duyệt yêu cầu đang ở trạng thái chờ.");
         }
-
         Long availableQuantity = bloodUnitRepository.getInventorySummaryByBloodType(request.getBloodType().getId());
         if (availableQuantity == null) availableQuantity = 0L;
-
         if (availableQuantity >= request.getQuantityNeeded()) {
             int quantityToDeduct = request.getQuantityNeeded();
             List<BloodUnit> availableUnits = bloodUnitRepository.findByBloodTypeIdAndStatusOrderByExpiryDateAsc(request.getBloodType().getId(), BloodUnit.Status.AVAILABLE);
-
             for (BloodUnit unit : availableUnits) {
                 if (quantityToDeduct <= 0) break;
                 int deductAmount = Math.min(quantityToDeduct, unit.getQuantity());
@@ -86,7 +76,6 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
     public void rejectRequest(Integer requestId) {
         EmergencyRequest request = emergencyRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu với ID: " + requestId));
-
         if (request.getStatus() != EmergencyRequest.Status.PENDING) {
             throw new IllegalStateException("Chỉ có thể từ chối yêu cầu đang ở trạng thái chờ.");
         }
@@ -102,7 +91,6 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
                 .orElseThrow(() -> new RuntimeException("Nhóm máu không hợp lệ."));
         MedicalCenter center = medicalCenterRepository.findById(dto.getMedicalCenterId())
                 .orElseThrow(() -> new RuntimeException("Bệnh viện không hợp lệ."));
-
         EmergencyRequest newRequest = new EmergencyRequest();
         newRequest.setRequesterUser(requester);
         newRequest.setPatientName(dto.getPatientName());
@@ -112,7 +100,6 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
         newRequest.setPhone(dto.getPhone());
         newRequest.setReason(dto.getReason());
         newRequest.setStatus(EmergencyRequest.Status.PENDING);
-
         emergencyRequestRepository.save(newRequest);
     }
 
@@ -133,17 +120,42 @@ public class EmergencyRequestServiceImpl implements EmergencyRequestService {
                 .filter(rule -> rule.getRecipientBloodType().getId().equals(recipientBloodTypeId) &&
                                  rule.getComponent() == BloodCompatibilityRule.Component.RED_CELLS)
                 .collect(Collectors.toList());
-
         List<Integer> compatibleBloodTypeIds = compatibleRules.stream()
                 .map(rule -> rule.getDonorBloodType().getId())
                 .collect(Collectors.toList());
-        
         if (!compatibleBloodTypeIds.contains(recipientBloodTypeId)) {
             compatibleBloodTypeIds.add(recipientBloodTypeId);
         }
-
         return userRepository.findAll().stream()
                 .filter(user -> user.getBloodType() != null && compatibleBloodTypeIds.contains(user.getBloodType().getId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void completeProcessingRequest(Integer requestId) {
+        EmergencyRequest request = emergencyRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu với ID: " + requestId));
+        if (request.getStatus() != EmergencyRequest.Status.PROCESSING) {
+            throw new IllegalStateException("Chỉ có thể hoàn tất yêu cầu đang ở trạng thái PROCESSING.");
+        }
+        Long availableQuantity = bloodUnitRepository.getInventorySummaryByBloodType(request.getBloodType().getId());
+        if (availableQuantity == null || availableQuantity < request.getQuantityNeeded()) {
+            throw new IllegalStateException("Không đủ máu trong kho để hoàn tất yêu cầu. Vui lòng tìm người hiến.");
+        }
+        int quantityToDeduct = request.getQuantityNeeded();
+        List<BloodUnit> availableUnits = bloodUnitRepository.findByBloodTypeIdAndStatusOrderByExpiryDateAsc(request.getBloodType().getId(), BloodUnit.Status.AVAILABLE);
+        for (BloodUnit unit : availableUnits) {
+            if (quantityToDeduct <= 0) break;
+            int deductAmount = Math.min(quantityToDeduct, unit.getQuantity());
+            unit.setQuantity(unit.getQuantity() - deductAmount);
+            if (unit.getQuantity() == 0) {
+                unit.setStatus(BloodUnit.Status.USED);
+            }
+            bloodUnitRepository.save(unit);
+            quantityToDeduct -= deductAmount;
+        }
+        request.setStatus(EmergencyRequest.Status.COMPLETED);
+        emergencyRequestRepository.save(request);
     }
 }

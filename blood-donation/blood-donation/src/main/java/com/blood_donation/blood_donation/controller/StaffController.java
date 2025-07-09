@@ -1,6 +1,9 @@
 package com.blood_donation.blood_donation.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,8 @@ import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.EmergencyRequest;
 import com.blood_donation.blood_donation.entity.User;
 import com.blood_donation.blood_donation.repository.BloodTypeRepository;
+import com.blood_donation.blood_donation.repository.BloodUnitRepository;
+import com.blood_donation.blood_donation.repository.DonationRegistrationRepository;
 import com.blood_donation.blood_donation.service.BloodInventoryService;
 import com.blood_donation.blood_donation.service.EmergencyRequestService;
 import com.blood_donation.blood_donation.service.RequestService;
@@ -33,15 +38,26 @@ public class StaffController {
 
     @Autowired
     private StaffDashboardService staffDashboardService;
+
     @Autowired
     private RequestService requestService;
+
     @Autowired
     private EmergencyRequestService emergencyRequestService;
+
     @Autowired
     private BloodInventoryService inventoryService;
+
     @Autowired
     private BloodTypeRepository bloodTypeRepository;
 
+    @Autowired
+    private DonationRegistrationRepository donationRegistrationRepository;
+    
+    @Autowired
+    private BloodUnitRepository bloodUnitRepository;
+
+    // --- DASHBOARD ---
     @GetMapping("/dashboard")
     public String showStaffDashboard(Model model) {
         model.addAttribute("pendingRequests", staffDashboardService.getPendingEmergencyRequestCount());
@@ -51,6 +67,7 @@ public class StaffController {
         return "staff/dashboard";
     }
 
+    // --- DUYỆT ĐƠN ĐĂNG KÝ HIẾN MÁU ---
     @GetMapping("/requests")
     public String showRequestManagementPage(
             @RequestParam(name = "donorPage", defaultValue = "0") int donorPage,
@@ -62,6 +79,7 @@ public class StaffController {
         return "staff/request-management";
     }
 
+    // --- QUẢN LÝ QUY TRÌNH HIẾN MÁU (2 CỘT) ---
     @GetMapping("/donors/manage")
     public String showDonorManagementPage(
             @RequestParam(name = "approvedPage", defaultValue = "0") int approvedPage,
@@ -77,6 +95,7 @@ public class StaffController {
         return "staff/donor-management";
     }
 
+    // --- LỊCH SỬ HIẾN MÁU ---
     @GetMapping("/donors/history")
     public String showDonorHistory(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
@@ -87,6 +106,7 @@ public class StaffController {
         return "staff/donor-history";
     }
 
+    // --- QUẢN LÝ KHO MÁU ---
     @GetMapping("/inventory")
     public String showInventoryManagement(Model model) {
         model.addAttribute("inventorySummary", inventoryService.getInventorySummary());
@@ -138,13 +158,27 @@ public class StaffController {
         return "redirect:/staff/inventory/details";
     }
 
+    // --- QUẢN LÝ YÊU CẦU MÁU KHẨN CẤP ---
     @GetMapping("/emergency-requests")
     public String showEmergencyRequestList(@RequestParam(defaultValue = "0") int page,
                                            @RequestParam(defaultValue = "10") int size,
                                            Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<EmergencyRequest> requestPage = emergencyRequestService.findAllRequests(pageable);
+        
+        // Tạo map để chứa số lượng tồn kho cho từng loại máu
+        Map<Integer, Long> inventoryMap = new HashMap<>();
+        List<Integer> bloodTypeIds = requestPage.getContent().stream()
+                                           .map(req -> req.getBloodType().getId())
+                                           .distinct()
+                                           .collect(Collectors.toList());
+        for (Integer bloodTypeId : bloodTypeIds) {
+            Long availableQuantity = bloodUnitRepository.getInventorySummaryByBloodType(bloodTypeId);
+            inventoryMap.put(bloodTypeId, availableQuantity != null ? availableQuantity : 0L);
+        }
+        
         model.addAttribute("requestPage", requestPage);
+        model.addAttribute("inventoryMap", inventoryMap);
         return "staff/emergency-request-list";
     }
     
@@ -154,17 +188,21 @@ public class StaffController {
                 .orElseThrow(() -> new RuntimeException("Yêu cầu không tồn tại"));
         
         if (request.getStatus() != EmergencyRequest.Status.PROCESSING) {
+            // Chỉ xử lý các yêu cầu có trạng thái PROCESSING
             return "redirect:/staff/emergency-requests";
         }
 
         model.addAttribute("request", request);
 
+        // Tìm những người đã đăng ký hiến máu phù hợp đã được duyệt
         List<User> potentialDonors = emergencyRequestService.findPotentialDonors(request.getBloodType().getId());
 
         model.addAttribute("potentialDonors", potentialDonors);
         
         return "staff/process-emergency-request";
     }
+
+    // --- CÁC HÀNH ĐỘNG (ACTIONS) ---
 
     @PostMapping("/donations/{id}/approve")
     public String approveDonation(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -226,6 +264,17 @@ public class StaffController {
         try {
             emergencyRequestService.rejectRequest(id);
             redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/staff/emergency-requests";
+    }
+    
+    @PostMapping("/emergency-requests/{id}/complete")
+    public String completeEmergencyRequest(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            emergencyRequestService.completeProcessingRequest(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã hoàn tất yêu cầu và trừ máu từ kho.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }

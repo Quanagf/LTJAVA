@@ -33,7 +33,7 @@
                         <th>Bệnh nhân</th>
                         <th>Nhóm máu</th>
                         <th>SL Cần</th>
-                        <th>Người yêu cầu</th>
+                        <th>SL trong kho</th> <th>Người yêu cầu</th>
                         <th>Ngày tạo</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
@@ -44,6 +44,7 @@
                         <td th:text="${req.patientName}">Tên bệnh nhân</td>
                         <td><span class="badge bg-danger" th:text="${req.bloodType}">A+</span></td>
                         <td th:text="${req.quantityNeeded}">2</td>
+                        <td th:text="${inventoryMap.get(req.bloodType.id)} ?: 0"></td>
                         <td th:text="${req.requesterUser.fullName}">Tên người yêu cầu</td>
                         <td th:text="${#temporals.format(req.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
                         <td>
@@ -65,14 +66,19 @@
                                 </form>
                             </div>
                             <div th:if="${req.status.name() == 'PROCESSING'}">
-                                <a th:href="@{/staff/emergency-requests/process/{requestId}(requestId=${req.id})}" class="btn btn-sm btn-primary">
-                                    Xử lý & Tìm người hiến
-                                </a>
+                                <th:block th:with="available=${inventoryMap.get(req.bloodType.id) != null ? inventoryMap.get(req.bloodType.id) : 0}">
+                                    <form th:if="${available >= req.quantityNeeded}" th:action="@{/staff/emergency-requests/{id}/complete(id=${req.id})}" method="post" class="d-inline-block">
+                                         <button type="submit" class="btn btn-sm btn-success">Hoàn tất từ kho</button>
+                                    </form>
+                                    <a th:unless="${available >= req.quantityNeeded}" th:href="@{/staff/emergency-requests/process/{requestId}(requestId=${req.id})}" class="btn btn-sm btn-primary">
+                                        Xử lý & Tìm người hiến
+                                    </a>
+                                </th:block>
                             </div>
                         </td>
                     </tr>
                     <tr th:if="${requestPage.empty}">
-                        <td colspan="7" class="text-center text-muted py-4">Không có yêu cầu nào.</td>
+                        <td colspan="8" class="text-center text-muted py-4">Không có yêu cầu nào.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -88,6 +94,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

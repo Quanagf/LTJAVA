@@ -18,4 +18,5 @@ public interface EmergencyRequestService {
     Page<EmergencyRequest> findAllRequests(Pageable pageable, Integer bloodTypeId, String phone, EmergencyRequest.Status status);
     Optional<EmergencyRequest> findById(Integer id);
     List<User> findPotentialDonors(Integer recipientBloodTypeId);
+    void completeProcessingRequest(Integer requestId);
 }
