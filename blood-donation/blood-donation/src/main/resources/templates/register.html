@@ -23,15 +23,18 @@
                     <form th:action="@{/register}" th:object="${userDto}" method="post">
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Họ và Tên</label>
-                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}">
+                            <div class="text-danger small" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="username" class="form-label">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                            <input type="text" class="form-control" id="username" th:field="*{username}">
+                            <div class="text-danger small" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Địa chỉ Email</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                            <input type="email" class="form-control" id="email" th:field="*{email}">
+                            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="dateOfBirth" class="form-label">Ngày sinh</label>
@@ -39,11 +42,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số điện thoại</label>
-                            <input type="tel" class="form-control" id="phone" th:field="*{phone}" required>
+                            <input type="tel" class="form-control" id="phone" th:field="*{phone}" pattern="\d{10}" title="Số điện thoại phải là 10 chữ số.">
+                            <div class="text-danger small" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="nationalId" class="form-label">Số CMND/CCCD</label>
-                            <input type="text" class="form-control" id="nationalId" th:field="*{nationalId}" required>
+                            <input type="text" class="form-control" id="nationalId" th:field="*{nationalId}" pattern="\d{12}" title="Số CMND/CCCD phải là 12 chữ số.">
+                            <div class="text-danger small" th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}"></div>
                         </div>
                          <div class="mb-3">
                             <label for="bloodTypeId" class="form-label">Nhóm máu của bạn</label>
@@ -54,11 +59,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Địa chỉ</label>
-                            <input type="text" class="form-control" id="address" th:field="*{address}" required>
+                            <input type="text" class="form-control" id="address" th:field="*{address}">
+                             <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="province" class="form-label">Tỉnh/Thành phố</label>
-                            <input type="text" class="form-control" id="province" th:field="*{province}" required>
+                            <input type="text" class="form-control" id="province" th:field="*{province}">
+                             <div class="text-danger small" th:if="${#fields.hasErrors('province')}" th:errors="*{province}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Mật khẩu</label>
