@@ -1,3 +1,4 @@
+// src/main/java/com/blood_donation/blood_donation/repository/DonationRegistrationRepository.java
 package com.blood_donation.blood_donation.repository;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.blood_donation.blood_donation.entity.BloodType; // Thêm import
+import com.blood_donation.blood_donation.entity.BloodType;
 import com.blood_donation.blood_donation.entity.DonationRegistration;
 import com.blood_donation.blood_donation.entity.User;
 
@@ -25,7 +26,5 @@ public interface DonationRegistrationRepository extends JpaRepository<DonationRe
     List<DonationRegistration> findTop5ByStatusOrderByCreatedAtDesc(DonationRegistration.Status status);
     long countByStatus(DonationRegistration.Status status);
     long countByStatusAndCompletedAtBetween(DonationRegistration.Status status, LocalDateTime start, LocalDateTime end);
-    
-    // <-- ADDED METHOD -->
     List<DonationRegistration> findByStatusAndBloodType(DonationRegistration.Status status, BloodType bloodType);
 }
